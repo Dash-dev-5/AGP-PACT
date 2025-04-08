@@ -22,7 +22,7 @@ const DetailComplait = () => {
   return (
     <div>
       <Row>
-        <h5>Traitement de plainte</h5>
+        <h5>Traitement de plainte </h5>
       </Row>
 
       <Row className="mt-4">

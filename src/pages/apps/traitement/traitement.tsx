@@ -35,10 +35,10 @@ import { fetchComplaintTypesAsync } from 'features/complaintType/complaintTypeSl
 import { fetchPrejudicesAsync, Prejudice } from 'features/prejudice/prejudiceSlice';
 import { Badge } from 'react-bootstrap';
 
-export default function VerticalLinearStepper() {
+export default function VerticalLinearStepper() { 
   //complaint id
   const { id } = useParams();
-  const { oneComplaint } = useAppSelector((state) => state.complaint);
+  const { oneComplaint } = useAppSelector((state) => state.complaint); 
 
   const [activeStep, setActiveStep] = React.useState<number>(() => {
     const savedStep = localStorage.getItem('activeStep');
@@ -842,7 +842,15 @@ export default function VerticalLinearStepper() {
 
     switch (stepPosition) {
       case 1:
-        return `Plainte enregistrée: ${oneComplaint.referenceNumber}`;
+        return `Plainte enregistrée : ${oneComplaint.code} \n
+          Date traitée : ${oneComplaint.tracking?.[0]?.dueDate}\n
+          Date de début : ${oneComplaint.tracking?.[0]?.startDate}\n
+          Date de fin : ${oneComplaint.tracking?.[0]?.endDate}\n
+
+          Délai normal : ${oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint}
+          Délai urgent : ${oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint}\n
+          Délai prioritaire : ${oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint}
+          `;
       case 2:
         return [`Type: ${oneComplaint.prejudice?.typeName || 'N/A'}`, `Préjudice: ${oneComplaint.prejudice?.name || 'N/A'}`];
       case 3:
