@@ -1,0 +1,23 @@
+section {
+  padding: 100px 0;
+
+  &.download {
+    .container {
+      h2 {
+        font-size: 1.5rem;
+
+        @media (max-width: 576px) {
+          font-size: 1.25rem; // Adjust for smaller screens if needed
+        }
+      }
+
+      & > div {
+        gap: 4rem;
+
+        @media (max-width: 576px) {
+          flex-direction: column; // Ensure stacking on small screens
+        }
+      }
+    }
+  }
+}

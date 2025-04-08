@@ -1,0 +1,42 @@
+.hero-section {
+  position: relative;
+  background: url('../../assets/images/landing/african-customer-service-operator.jpg') center center/cover no-repeat;
+  padding: 0;
+  color: white;
+}
+
+.hero-backdrop {
+  background-color: rgba(14, 12, 12, 0.459); /* Semi-transparent backdrop */
+  height: auto;
+  display: flex;
+  padding: 160px 0;
+  /* align-items: center; Vertically center the content */
+}
+
+.custom-button-red {
+  background-color: transparent;
+  color: red;
+  border: 2px solid red;
+  transition: all 0.3s ease;
+}
+.custom-button-red:hover {
+  background-color: red;
+  color: white;
+}
+
+.custom-button-blue {
+  background-color: blue;
+  color: white;
+  border: 2px solid blue;
+  transition: all 0.3s ease;
+}
+.custom-button-blue:hover {
+  background-color: transparent;
+  color: blue;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    text-align: center; /* Center text on smaller screens */
+  }
+}
