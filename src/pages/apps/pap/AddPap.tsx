@@ -136,7 +136,7 @@ const AddPap = () => {
             </Form.Group>
           </Col>
 
-          {[
+            {[
             {
               name: 'surface',
               label: 'Surface (m²)',
@@ -200,18 +200,30 @@ const AddPap = () => {
               label: 'Assistance Personne Vulnérable',
               type: 'number',
               placeholder: 'Ex: 200'
+            },
+            {
+              name: 'photos',
+              label: 'Photos',
+              type: 'file',
+              placeholder: '',
+              multiple: true
             }
-          ].map((field) => (
+            ].map((field) => (
             <Col md={6} key={field.name}>
               <Form.Group className="mb-3">
-                <Form.Label>{field.label}</Form.Label>
-                <Form.Control {...register(field.name as keyof CreatePap)} type={field.type || 'text'} placeholder={field.placeholder} />
-                {errors[field.name as keyof CreatePap] && (
-                  <p className="text-danger small">{errors[field.name as keyof CreatePap]?.message}</p>
-                )}
+              <Form.Label>{field.label}</Form.Label>
+              <Form.Control
+                {...register(field.name as keyof CreatePap)}
+                type={field.type || 'text'}
+                placeholder={field.placeholder}
+                multiple={field.multiple || undefined}
+              />
+              {errors[field.name as keyof CreatePap] && (
+                <p className="text-danger small">{errors[field.name as keyof CreatePap]?.message}</p>
+              )}
               </Form.Group>
             </Col>
-          ))}
+            ))}
         </Row>
 
         <Form.Group className="mb-3">
