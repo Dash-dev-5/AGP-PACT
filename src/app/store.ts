@@ -26,7 +26,7 @@ import unitsReducer from 'features/units/unitsSlice';
 import assetTypeReducer from 'features/asset-type/assetTypeSlice';
 import papReducer from 'features/pap/papSlice';
 
-const store = configureStore({
+const store = configureStore({ 
   reducer: {
     notification: notificationSlice,
     complaint: complaintSlice,

@@ -23,6 +23,7 @@ export const Form5VictimesDataType = z.object({
   sector: z.string().min(1, { message: 'Le secteur est requis' }),
   village: z.string().min(1, { message: 'Le village est requis' }),
   addressLine1: z.string().or(z.literal(''))
+  
 });
 
 interface Form5VictimesProps {
@@ -150,7 +151,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
                   <Form.Label>
                     Cause de l'incident <span className="text-danger">*</span>
                   </Form.Label>
-                  <Form.Select {...register('type')} isInvalid={!!errors.incidentCause}>
+                  <Form.Select {...register('type')} isInvalid={!!errors.type}>
                     <option value="">Sélectionner la cause de l'incident</option>
                     {incidentCauses.map((cause) => (
                       <option key={cause.id} value={cause.id}>
@@ -158,7 +159,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
                       </option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.incidentCause?.message}</Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">{errors.type?.message}</Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>

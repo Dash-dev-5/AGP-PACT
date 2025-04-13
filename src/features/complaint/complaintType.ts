@@ -18,7 +18,7 @@ export interface CreateComplaint {
   complaintType?: string;
   prejudice: string;
   site: string;
-  incidentCause: string;
+  type: string;
   repairType: string;
   responsibleEntity: string;
   complainant: LocalComplainant;

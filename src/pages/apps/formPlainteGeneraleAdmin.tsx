@@ -39,7 +39,8 @@ function FormPlainteGeneraleAdmin() {
         ...formData,
         incidentStartDate: data.incidentStartDate,
         incidentEndDate: data.incidentEndDate,
-        incidentCause: data.incidentCause,
+        type: data.type,
+        
         description: data.description,
         province: data.province,
         city: data.city,

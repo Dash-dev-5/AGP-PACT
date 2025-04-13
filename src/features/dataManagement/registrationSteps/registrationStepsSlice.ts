@@ -26,7 +26,7 @@ const initialState: InitialState = {
     city: '',
     sector: '',
     village: '',
-    incidentCause: '',
+    type: '',
     victims: [],
     species: [],
     complainant: {
@@ -56,8 +56,10 @@ export const submitRegstrationForm = createAsyncThunk<any, RegerationFormType>(
   async (registrationComplaint, { rejectWithValue }) => {
     try {
       const response = await postRequest<any>(endpoints.complainant.main, registrationComplaint);
+      console.log('£££ response', response);
       return response.data;
     } catch (error) {
+      console.log('£££ error', error);
       return rejectWithValue(parseError(error));
     }
   }

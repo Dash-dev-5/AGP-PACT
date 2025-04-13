@@ -39,9 +39,12 @@ export const getRequest = async <T>(path: string, params = {}): Promise<ApiRespo
 
 export const postRequest = async <T>(path: string, data = {}, params = {}): Promise<ApiResponse<T>> => {
   try {
+    console.log('##########1 ',path, data, params);
     const res = await axiosServices.post<T>(path, data, { params });
+    console.log('########## ',res);
     return { data: res.data };
   } catch (error) {
+    console.error('##########3 ',error);
     throw new Error(parseError(error));
   }
 };

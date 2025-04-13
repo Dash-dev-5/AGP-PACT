@@ -26,7 +26,8 @@ const initialState: InitialState = {
     city: '',
     sector: '',
     village: '',
-    incidentCause: '',
+    type: '',
+    isSensitive: false,
     victims: [],
     species: [],
     complainant: {
@@ -56,6 +57,7 @@ export const submitRegstrationForm = createAsyncThunk<any, AdminRegerationFormTy
   async (registrationComplaint, { rejectWithValue }) => {
     try {
       const response = await postRequest<any>(endpoints.complaint.main, registrationComplaint);
+      console.log('########## submitRegstrationForm ', response);
       return response.data;
     } catch (error) {
       return rejectWithValue(parseError(error));
@@ -63,7 +65,7 @@ export const submitRegstrationForm = createAsyncThunk<any, AdminRegerationFormTy
   }
 );
 
-const adminRegistrationSteps = createSlice({
+const adminRegistrationSteps = createSlice({ 
   name: 'adminRegistrationSteps',
   initialState,
   reducers: {
