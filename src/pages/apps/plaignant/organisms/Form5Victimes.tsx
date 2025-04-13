@@ -16,7 +16,7 @@ import { ComplaintRegistrationForm } from 'features/dataManagement/complainantCo
 export const Form5VictimesDataType = z.object({
   incidentStartDate: z.string().min(1, { message: 'La date est requise' }),
   incidentEndDate: z.string().min(1, { message: 'La date est requise' }),
-  incidentCause: z.string().min(1, { message: 'La cause est requise' }),
+  type: z.string().min(1, { message: 'La cause est requise' }),
   description: z.string().min(1, { message: 'La description est requise' }),
   province: z.string().min(1, { message: 'La province est requise' }),
   city: z.string().min(1, { message: 'La ville est requise' }),
@@ -47,7 +47,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
   const dispatch = useAppDispatch();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const { provinces } = useAppSelector((state) => state.province);
-  const { incidentCauses } = useAppSelector((state) => state.incidentCause);
+  const { incidentCauses } = useAppSelector((state) => state.type);
 
   const {
     register,
@@ -60,7 +60,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
     defaultValues: {
       incidentStartDate: formData.incidentStartDate,
       incidentEndDate: formData.incidentEndDate,
-      incidentCause: formData.incidentCause,
+      type: formData.type,
       description: formData.description,
       province: formData.province,
       city: formData.city,
@@ -150,7 +150,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
                   <Form.Label>
                     Cause de l'incident <span className="text-danger">*</span>
                   </Form.Label>
-                  <Form.Select {...register('incidentCause')} isInvalid={!!errors.incidentCause}>
+                  <Form.Select {...register('type')} isInvalid={!!errors.incidentCause}>
                     <option value="">Sélectionner la cause de l'incident</option>
                     {incidentCauses.map((cause) => (
                       <option key={cause.id} value={cause.id}>

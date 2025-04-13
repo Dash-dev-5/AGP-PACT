@@ -15,7 +15,7 @@ export interface ComplaintRegistrationForm {
   sector: string;
   village: string;
   complainant: any;
-  incidentCause: string;
+  type: string;
   victims: VictimeType[];
   species: SpeciesType[];
 }

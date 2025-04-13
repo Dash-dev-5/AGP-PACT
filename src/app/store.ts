@@ -39,7 +39,7 @@ const store = configureStore({
     prejudice: prejudiceSlice,
     vulnerability: vulnerabilitySlice,
     projectSite: projectSiteReducer,
-    incidentCause: incidentCauseReducer,
+    type: incidentCauseReducer,
     repairRequest: repairRequestReducer,
     responsibleEntity: responsibleEntityReducer,
     groupCommitees: groupCommiteesSlice,

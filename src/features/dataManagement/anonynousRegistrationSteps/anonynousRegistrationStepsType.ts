@@ -14,7 +14,7 @@ export interface AnonymousRegistrationForm {
   sector: string;
   village: string;
   complainant: undefined;
-  incidentCause: string;
+  type: string;
   victims: VictimeType[];
   species: SpeciesType[];
 }

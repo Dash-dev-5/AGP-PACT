@@ -28,7 +28,7 @@ export const fetchIncidentCausesAsync = createAsyncThunk<IncidentCause[], void>(
 );
 
 const incidentCauseSlice = createSlice({
-  name: 'incidentCause',
+  name: 'type',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
