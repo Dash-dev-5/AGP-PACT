@@ -128,6 +128,12 @@ const DetailComplait = () => {
                         <span translate="no">{oneComplaint.complainant.villageName}</span>
                       </div>
                     </div>
+                    <div className="col-4">
+                      <div className="d-flex flex-column">
+                        <strong>Type</strong>
+                        <span translate="no">{oneComplaint.complainant.type}</span>
+                      </div>
+                    </div>
                   </div>
                   {/* <div style={{ flex: '0 0 48%', marginBottom: '10px', display: 'flex' }}>
                     <strong style={{ width: '150px' }}>Adresse 1</strong>
@@ -214,6 +220,8 @@ const DetailComplait = () => {
                       <span>{oneComplaint?.villageName}</span>
                     </div>
                   </div>
+
+ 
                 </div>
               </AccordionDetails>
             </Accordion>
