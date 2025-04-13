@@ -40,6 +40,7 @@ const store = configureStore({
     vulnerability: vulnerabilitySlice,
     projectSite: projectSiteReducer,
     type: incidentCauseReducer,
+    isSensitive: incidentCauseReducer,
     repairRequest: repairRequestReducer,
     responsibleEntity: responsibleEntityReducer,
     groupCommitees: groupCommiteesSlice,

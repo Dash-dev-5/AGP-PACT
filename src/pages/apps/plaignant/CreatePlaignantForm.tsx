@@ -43,7 +43,9 @@ function CreatePlaignantForm() {
         city: data.city,
         sector: data.sector,
         village: data.village,
-        addressLine1: data.addressLine1
+        addressLine1: data.addressLine1,
+        isSensitive: data.isSensitive
+
       })
     );
   };

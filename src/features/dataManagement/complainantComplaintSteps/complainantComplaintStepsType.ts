@@ -16,6 +16,7 @@ export interface ComplaintRegistrationForm {
   village: string;
   complainant: any;
   type: string;
+  isSensitive: Boolean;
   victims: VictimeType[];
   species: SpeciesType[];
 }

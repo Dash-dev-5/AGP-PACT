@@ -14,6 +14,7 @@ export interface RegerationFormType {
   sector: string;
   village: string;
   type: string;
+  isSensitive: Boolean;
   victims: VictimeType[];
   species: SpeciesType[];
   complainant: {

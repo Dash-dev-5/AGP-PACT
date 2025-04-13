@@ -40,13 +40,14 @@ function FormPlainteGeneraleAdmin() {
         incidentStartDate: data.incidentStartDate,
         incidentEndDate: data.incidentEndDate,
         type: data.type,
-        
+        isSensitive: data.isSensitive,
         description: data.description,
         province: data.province,
         city: data.city,
         sector: data.sector,
         village: data.village,
-        addressLine1: data.addressLine1
+        addressLine1: data.addressLine1,
+        
       })
     );
   };

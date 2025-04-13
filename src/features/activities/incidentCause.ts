@@ -8,12 +8,14 @@ interface InitialState {
   loading: boolean;
   error: string | null;
   
+  
 }
 
 const initialState: InitialState = {
   incidentCauses: [],
   loading: false,
-  error: null
+  error: null,  
+  
 };
 
 /**
@@ -33,6 +35,7 @@ export const fetchIncidentCausesAsync = createAsyncThunk<IncidentCause[], void>(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getRequest<IncidentCause[]>(endpoints.complaintType.main);
+
       console.log('########## IncidentCause ',response);
       return response.data;
     } catch (error) {
