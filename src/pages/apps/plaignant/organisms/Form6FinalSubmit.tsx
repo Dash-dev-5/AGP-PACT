@@ -181,7 +181,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
 
   return (
     <>
-      <FormSummary formData={formData} />
+     
       <RegisterVictimes
         saveVictimesData={saveVictimesData}
         updateVictimeByIndex={updateVictimeByIndex}
@@ -204,6 +204,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
           Envoyer
         </Button>
       </Form>
+      <FormSummary formData={formData} />
     </>
   );
 };

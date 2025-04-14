@@ -285,7 +285,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
         <FileUpload onFilesChange={handleFilesChange} />
       </div>
      
-        {watch('isSensitive') && (
+        {!watch('isSensitive') && (
           <div className="species-data-section">
             <Form5VictimesEspeces
               saveSpeciesData={saveSpeciesData}
