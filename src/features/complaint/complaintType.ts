@@ -1,5 +1,6 @@
 import { Complainant } from 'features/complainant/complainantType';
 import { Prejudice } from 'features/prejudice/prejudiceSlice';
+import { ComplaintType } from 'types/complaintType';
 
 export interface CreateComplaint {
   typeSend: 'Nominal' | 'Anonymous';
@@ -94,7 +95,7 @@ export interface Complaint {
   villageId: string;
   status?: string;
   site: Site;
-  incidentActivityCause: IncidentActivityCause;
+  incidentActivityCause: ComplaintType;
   repairType: RepairType;
   responsibleEntity: ResponsibleEntity;
   complainant: Complainant;
@@ -165,12 +166,12 @@ interface RepairType {
   referenceNumber: string;
 }
 
-interface IncidentActivityCause {
-  name: string;
-  id: string;
-  slug: string;
-  referenceNumber: string;
-}
+// interface complaintTypeSlice {
+//   name: string;
+//   id: string;
+//   slug: string;
+//   referenceNumber: string;
+// }
 
 type TrackingStep = {
   name: string;
