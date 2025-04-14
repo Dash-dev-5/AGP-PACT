@@ -22,6 +22,7 @@ const initialState: InitialState = {
     addressLine1: undefined,
     addressLine2: undefined,
     isComplainantAffected: 'false',
+    isSensitive: false,
     province: '',
     city: '',
     sector: '',

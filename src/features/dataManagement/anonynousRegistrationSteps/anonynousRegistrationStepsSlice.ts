@@ -19,12 +19,13 @@ const initialState: InitialState = {
     addressLine1: undefined,
     addressLine2: undefined,
     isComplainantAffected: 'false',
+    isSensitive: false,
     complainant: undefined,
     province: '',
     city: '',
     sector: '',
     village: '',
-    incidentCause: '',
+    type: '',
     victims: [],
     species: []
   }
