@@ -16,13 +16,15 @@ import { ComplaintRegistrationForm } from 'features/dataManagement/complainantCo
 export const Form5VictimesDataType = z.object({
   incidentStartDate: z.string().min(1, { message: 'La date est requise' }),
   incidentEndDate: z.string().min(1, { message: 'La date est requise' }),
-  incidentCause: z.string().min(1, { message: 'La cause est requise' }),
+  type: z.string().min(1, { message: 'La cause est requise' }),
   description: z.string().min(1, { message: 'La description est requise' }),
   province: z.string().min(1, { message: 'La province est requise' }),
   city: z.string().min(1, { message: 'La ville est requise' }),
   sector: z.string().min(1, { message: 'Le secteur est requis' }),
   village: z.string().min(1, { message: 'Le village est requis' }),
   addressLine1: z.string().or(z.literal(''))
+  ,
+  isSensitive: z.boolean().optional()
 });
 
 interface Form5VictimesProps {
@@ -47,7 +49,8 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
   const dispatch = useAppDispatch();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const { provinces } = useAppSelector((state) => state.province);
-  const { incidentCauses } = useAppSelector((state) => state.incidentCause);
+  const { incidentCauses } = useAppSelector((state) => state.type);
+  
 
   const {
     register,
@@ -60,19 +63,38 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
     defaultValues: {
       incidentStartDate: formData.incidentStartDate,
       incidentEndDate: formData.incidentEndDate,
-      incidentCause: formData.incidentCause,
+      type: formData.type,
       description: formData.description,
       province: formData.province,
       city: formData.city,
       sector: formData.sector,
       village: formData.village,
-      addressLine1: formData.addressLine1
+      addressLine1: formData.addressLine1,
+      isSensitive: !!formData.isSensitive, // Pass the initial value from formData
     }
   });
+   
+  const selectedType = watch('type');
+
+  useEffect(() => {
+    const selectedCause = incidentCauses.find((cause) => cause.id === selectedType);
+    if (selectedCause) {
+      const sensitiveValue = selectedCause.isSensitive;
+      setValue('isSensitive', sensitiveValue); // Directly update the form value
+      console.log('Valeur de isSensitive:', sensitiveValue);
+
+      // Ajouter la valeur de isSensitive dans le store Redux
+      dispatch({
+        type: 'incident/updateIsSensitive',
+        payload: sensitiveValue,
+      });
+    }
+  }, [selectedType, incidentCauses, dispatch]);
 
   const [cities, setCities] = useState<ICity[]>([]);
   const [sectors, setSectors] = useState<ISector[]>([]);
   const [villages, setVillages] = useState<IVillage[]>([]);
+
 
   useEffect(() => {
     dispatch(fetchProvinces());
@@ -150,15 +172,18 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
                   <Form.Label>
                     Cause de l'incident <span className="text-danger">*</span>
                   </Form.Label>
-                  <Form.Select {...register('incidentCause')} isInvalid={!!errors.incidentCause}>
+                  <Form.Select {...register('type')} isInvalid={!!errors.type}>
                     <option value="">Sélectionner la cause de l'incident</option>
                     {incidentCauses.map((cause) => (
-                      <option key={cause.id} value={cause.id}>
-                        {cause.name}
+                      <option
+                      key={cause.id}
+                      value={cause.id}
+                      >
+                      {cause.name}
                       </option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.incidentCause?.message}</Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">{errors.type?.message}</Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -259,15 +284,17 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
       <div className="file-upload-section mb-4">
         <FileUpload onFilesChange={handleFilesChange} />
       </div>
-
-      <div className="species-data-section">
-        <Form5VictimesEspeces
-          saveSpeciesData={saveSpeciesData}
-          formData={formData}
-          deleteSpeciesByIndex={deleteSpeciesByIndex}
-          updateSpeciesByIndex={updateSpeciesByIndex}
-        />
-      </div>
+     
+        {watch('isSensitive') && (
+          <div className="species-data-section">
+            <Form5VictimesEspeces
+              saveSpeciesData={saveSpeciesData}
+              formData={formData}
+              deleteSpeciesByIndex={deleteSpeciesByIndex}
+              updateSpeciesByIndex={updateSpeciesByIndex}
+            />
+          </div>
+        )}
 
       <div className="action-buttons d-flex justify-content-between mt-4">
         {prevStep && (

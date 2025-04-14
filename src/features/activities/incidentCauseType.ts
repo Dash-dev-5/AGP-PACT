@@ -7,4 +7,5 @@ export interface IncidentCause {
   name: string;
   slug: string;
   referenceNumber: string;
+  isSensitive: boolean;
 }

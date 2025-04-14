@@ -37,13 +37,15 @@ function CreatePlaignantForm() {
         ...formData,
         incidentStartDate: data.incidentStartDate,
         incidentEndDate: data.incidentEndDate,
-        incidentCause: data.incidentCause,
+        type: data.type,
         description: data.description,
         province: data.province,
         city: data.city,
         sector: data.sector,
         village: data.village,
-        addressLine1: data.addressLine1
+        addressLine1: data.addressLine1,
+        isSensitive: data.isSensitive
+
       })
     );
   };
@@ -53,7 +55,7 @@ function CreatePlaignantForm() {
     console.log(formData);
 
     try {
-      await dispatch(submitRegstrationForm(formData)).unwrap();
+      await dispatch(submitRegstrationForm(formData)).unwrap(); 
       dispatch(resetForm());
       toast.update(toastId, {
         render: 'Formulaire envoye avec success',

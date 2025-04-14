@@ -13,8 +13,8 @@ const FormData = z.object({
   province: z.string().min(1, { message: 'La province est requise' }),
   city: z.string().min(1, { message: 'La ville est requise' }),
   sector: z.string().min(1, { message: 'Le secteur est requis' }),
-  village: z.string().min(1, { message: 'Le village est requis' }),
-  addressLine1: z.string().optional()
+  village: z.string().optional(),
+  addressLine1: z.string().min(1, { message: 'Addresse est requis' })
 });
 
 interface Form4RegerationProps {

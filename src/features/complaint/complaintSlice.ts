@@ -45,6 +45,7 @@ export const fetchComplaints = createAsyncThunk<
   if (site) url += `&site=${site}`;
   try {
     const response = await getRequest<WithPaggination<Complaint>>(url);
+    console.log('#### response', response);
     return response.data;
   } catch (error) {
     return rejectWithValue(parseError(error));

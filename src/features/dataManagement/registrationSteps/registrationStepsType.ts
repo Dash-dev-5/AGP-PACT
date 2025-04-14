@@ -13,7 +13,8 @@ export interface RegerationFormType {
   city: string;
   sector: string;
   village: string;
-  incidentCause: string;
+  type: string;
+  isSensitive: Boolean;
   victims: VictimeType[];
   species: SpeciesType[];
   complainant: {

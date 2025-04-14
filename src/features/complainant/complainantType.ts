@@ -51,6 +51,7 @@ export interface Complainant {
   vulnerabilityLevelName: string;
   vulnerabilityLevelId: string;
   role: string;
+  type: string;
 }
 
 export interface WithPaggination<T> {

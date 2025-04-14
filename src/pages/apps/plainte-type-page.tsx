@@ -23,6 +23,9 @@ export default function PlainteTypePage() {
   const [show, setShow] = useState(false);
   const dispatch = useAppDispatch();
   const { complaintTypes } = useAppSelector((state) => state.complaintType);
+
+  console.log('########## complaintTypes ', complaintTypes);
+ 
   const {
     register,
     handleSubmit,

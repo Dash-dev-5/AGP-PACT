@@ -26,7 +26,7 @@ import unitsReducer from 'features/units/unitsSlice';
 import assetTypeReducer from 'features/asset-type/assetTypeSlice';
 import papReducer from 'features/pap/papSlice';
 
-const store = configureStore({
+const store = configureStore({ 
   reducer: {
     notification: notificationSlice,
     complaint: complaintSlice,
@@ -39,7 +39,8 @@ const store = configureStore({
     prejudice: prejudiceSlice,
     vulnerability: vulnerabilitySlice,
     projectSite: projectSiteReducer,
-    incidentCause: incidentCauseReducer,
+    type: incidentCauseReducer,
+    isSensitive: incidentCauseReducer,
     repairRequest: repairRequestReducer,
     responsibleEntity: responsibleEntityReducer,
     groupCommitees: groupCommiteesSlice,

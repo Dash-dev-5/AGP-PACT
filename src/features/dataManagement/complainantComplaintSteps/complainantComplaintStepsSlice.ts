@@ -25,7 +25,7 @@ const initialState: InitialState = {
     sector: '',
     village: '',
     complainant: '',
-    incidentCause: '',
+    type: '',
     victims: [],
     species: []
   }
