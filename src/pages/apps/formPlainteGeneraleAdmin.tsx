@@ -96,7 +96,7 @@ function FormPlainteGeneraleAdmin() {
         prevStep={dispatchedPrevStep}
         saveSpeciesData={dispatchedSaveSpeciesData}
         formData={formData}
-        updateSpeciesByIndex={dispatchedUpdateSpeciesByIndex}
+        updateSpeciesByIndex={dispatchedUpdateSpeciesByIndex} 
         deleteSpeciesByIndex={dispatchedDeleteSpeciesByIndex}
       />
       )}

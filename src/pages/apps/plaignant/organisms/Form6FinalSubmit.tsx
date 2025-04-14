@@ -14,6 +14,18 @@ interface Form6FinalSubmitProps {
   deleteVictimeByIndex: (index: number) => void;
   formData: RegerationFormType | AnonymousRegistrationForm | ComplaintRegistrationForm;
 }
+
+const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
+  return (
+    <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
+      <h5>Résumé des formulaires</h5>
+      <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+        {JSON.stringify(formData, null, 2)}
+      </pre>
+    </div>
+  );
+};
+
 const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
   prevStep,
   onSubmit,
@@ -26,6 +38,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
 
   return (
     <>
+      <FormSummary formData={formData} />
       <RegisterVictimes
         saveVictimesData={saveVictimesData}
         updateVictimeByIndex={updateVictimeByIndex}
