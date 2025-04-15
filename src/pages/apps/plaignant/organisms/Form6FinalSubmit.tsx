@@ -78,7 +78,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {complainant && (
             <>
               <tr>
-                <th style={styles.th} colSpan={2} style={styles.sectionTitle}>
+                <th style={{...styles.th, ...styles.sectionTitle}} colSpan={2}>
                   Informations du Plaignant
                 </th>
               </tr>
@@ -136,7 +136,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {species && species.length > 0 && (
             <>
               <tr>
-                <th style={styles.th} colSpan={2} style={styles.sectionTitle}>
+                <th style={{...styles.th, ...styles.sectionTitle}} colSpan={2}>
                   Espèces Affectées
                 </th>
               </tr>
