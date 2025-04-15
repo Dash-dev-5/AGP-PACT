@@ -55,7 +55,7 @@ export interface ComplaintForm {
   village?: GeoEntity;
   prejudice?: GeoEntity;
   site?: GeoEntity;
-  incidentCause?: GeoEntity;
+  type?: GeoEntity;
   repairType?: GeoEntity;
   responsibleEntity?: GeoEntity;
   complainant: Complainant;

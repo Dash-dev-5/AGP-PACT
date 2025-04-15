@@ -62,6 +62,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           </tr>
           <tr>
             <th style={styles.th}>Le plaignant est-il affecté ?</th>
+            <td style={styles.td}></td>
             <td style={styles.td}>
               {isComplainantAffected === true ? 'Oui' : isComplainantAffected === false ? 'Non' : 'Non renseigné'}
             </td>
@@ -78,7 +79,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {complainant && (
             <>
               <tr>
-                <th style={styles.th} colSpan={2} style={styles.sectionTitle}>
+                <th style={{ ...styles.th, ...styles.sectionTitle }} colSpan={2}>
                   Informations du Plaignant
                 </th>
               </tr>
@@ -136,7 +137,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {species && species.length > 0 && (
             <>
               <tr>
-                <th style={styles.th} colSpan={2} style={styles.sectionTitle}>
+                <th style={{ ...styles.th, ...styles.sectionTitle }} colSpan={2}>
                   Espèces Affectées
                 </th>
               </tr>
@@ -218,24 +219,24 @@ const styles = {
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     width: '100%', // Pour que le tableau occupe la largeur du conteneur
-    overflowX: 'auto', // Pour gérer les tableaux potentiellement larges sur les petits écrans
+    overflowX: 'auto' as 'auto', // Pour gérer les tableaux potentiellement larges sur les petits écrans
   },
   title: {
     marginBottom: '20px',
     color: '#333',
     fontSize: '1.5em',
     fontWeight: 'bold',
-    textAlign: 'left',
+    textAlign: 'left' as 'left', // Added explicit type casting
   },
   table: {
     width: '100%',
-    borderCollapse: 'collapse',
+    borderCollapse: 'collapse' as 'collapse', // Explicitly cast to the correct type
     marginTop: '10px',
   },
   th: {
     border: '1px solid #ddd',
     padding: '10px',
-    textAlign: 'left',
+    textAlign: 'left' as 'left', // Added explicit type casting
     fontWeight: 'bold',
     backgroundColor: '#f2f2f2',
     fontSize: '0.95em',
@@ -252,14 +253,14 @@ const styles = {
     padding: '12px 10px',
     backgroundColor: '#e0e0e0',
     color: '#333',
-    textAlign: 'left',
+    textAlign: 'left' as 'left', // Added explicit type casting
     fontSize: '1.1em',
   },
   emptyMessage: {
     padding: '15px',
     fontStyle: 'italic',
     color: '#777',
-    textAlign: 'center',
+    textAlign: 'center' as 'center', // Added explicit type casting
   },
 };
 export default Form6FinalSubmit;

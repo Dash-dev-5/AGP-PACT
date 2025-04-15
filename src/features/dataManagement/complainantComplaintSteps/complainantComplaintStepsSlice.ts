@@ -26,6 +26,7 @@ const initialState: InitialState = {
     village: '',
     complainant: '',
     type: '',
+    isSensitive: false,
     victims: [],
     species: []
   }

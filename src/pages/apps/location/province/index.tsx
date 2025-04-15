@@ -75,53 +75,54 @@ export default function Province() {
           <div>
             <Table striped bordered hover responsive className="table-sm">
               <thead className="table-dark">
-                <tr>
-                  <th>#</th>
-                  <th>Nom</th>
-                  <th>nombre de ville</th>
-                  <th></th>
-                </tr>
+              <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>nombre de ville</th>
+                <th></th>
+              </tr>
               </thead>
               <tbody>
-                {status === 'loading' && (
-                  <tr>
-                    <td colSpan={3} className="text-center">
-                      <Spinner animation="border" size="sm" className="text-primary" />
-                    </td>
-                  </tr>
-                )}
-                {status === 'failed' && (
-                  <tr>
-                    <td colSpan={3} className="text-center text-danger">
-                      {error}
-                    </td>
-                  </tr>
-                )}
-                {status === 'succeeded' &&
-                  provinces.length > 0 &&
-                  provinces.map((province, index) => (
-                    <tr key={province.id}>
-                      <td>{index + 1}</td>
-                      <td>{province.name}</td>
-                      <td>{province.cities.length}</td>
-                      <td style={{ width: '1%' }}>
-                        <div className="d-flex gap-2 align-items-center justify-content-center">
-                          <Button disabled={!province.cities.length} onClick={() => navigate(province.id)}>
-                            Villes
-                          </Button>
-                          <UpdateProvince province={province} />
-                          <DeleteProvince id={province.id} name={province.name} />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                {status === 'succeeded' && provinces.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="text-center">
-                      Aucune province trouvé
-                    </td>
-                  </tr>
-                )}
+              {status === 'loading' && (
+                <tr>
+                <td colSpan={3} className="text-center">
+                  <Spinner animation="border" size="sm" className="text-primary" />
+                </td>
+                </tr>
+              )}
+              {status === 'failed' && (
+                <tr>
+                <td colSpan={3} className="text-center text-danger">
+                  {error}
+                </td>
+                </tr>
+              )}
+              {status === 'succeeded' &&
+                provinces.length > 0 &&
+                provinces.map((province, index) => (
+                <tr key={province.id}>
+                  <td>{index + 1}</td>
+                  <td>{province.name}</td>
+                  <td>{province.cities.length}</td>
+                  <td style={{ width: '1%' }}>
+                  <div className="d-flex gap-2 align-items-center justify-content-center">
+                    <Button variant="secondary">Affecter</Button>
+                    <Button disabled={!province.cities.length} onClick={() => navigate(province.id)}>
+                    Villes
+                    </Button>
+                    <UpdateProvince province={province} />
+                    <DeleteProvince id={province.id} name={province.name} />
+                  </div>
+                  </td>
+                </tr>
+                ))}
+              {status === 'succeeded' && provinces.length === 0 && (
+                <tr>
+                <td colSpan={4} className="text-center">
+                  Aucune province trouvé
+                </td>
+                </tr>
+              )}
               </tbody>
             </Table>
           </div>

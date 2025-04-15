@@ -24,9 +24,10 @@ const initialState: InitialState = {
     city: '',
     sector: '',
     village: '',
-    incidentCause: '',
+    type: '',
     victims: [],
-    species: []
+    species: [],
+    isSensitive: false
   }
 };
 
