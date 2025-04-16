@@ -18,7 +18,7 @@ interface Form6FinalSubmitProps {
  //const { professions } = useAppSelector((state) => state.profession);
 // Removed from global scope
 // Form6FinalSubmit component
-const FormSummary: React.FC<{ formData: any; provinces: any[] }> = ({ formData, provinces }) => {
+const FormSummary: React.FC<{ formData: any; provinces: any[],professions:any[], incidentCauses: any[]}> = ({ formData, provinces,professions,incidentCauses }) => {
   const {
     description,
     incidentStartDate,
@@ -71,7 +71,7 @@ const FormSummary: React.FC<{ formData: any; provinces: any[] }> = ({ formData, 
           </tr>
           <tr>
             <th style={styles.th}>Type d'incident</th>
-            <td style={styles.td}>{type || 'Non renseignée'}</td>
+            <td style={styles.td}>{incidentCauses.find((incidentCause) => incidentCause.id === type)?.name  || 'Non renseignée'}</td>
           </tr>
           <tr>
             <th style={styles.th}>Incident sensible</th>
@@ -146,9 +146,9 @@ const FormSummary: React.FC<{ formData: any; provinces: any[] }> = ({ formData, 
                   }
                 </td>
               </tr>
-              <tr>
+              <tr> 
                 <th style={styles.th}>Profession</th>
-                <td style={styles.td}>{complainant.profession || 'Non renseignée'}</td>
+                <td style={styles.td}>{ professions.find((profession) => profession.id === complainant.profession)?.name  || 'Non renseignée'}</td>
               </tr>
             </>
           )}
@@ -199,6 +199,9 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
 }) => {
   const { handleSubmit } = useForm();
   const { provinces } = useAppSelector((state) => state.province); // Moved here to ensure proper scope
+  const { professions } = useAppSelector((state) => state.profession);
+  const { incidentCauses } = useAppSelector((state) => state.type)
+
 
   return (
     <>
@@ -225,7 +228,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
           Envoyer
         </Button>
       </Form>
-      <FormSummary formData={formData} provinces={provinces} />
+      <FormSummary formData={formData} provinces={provinces} professions={professions} incidentCauses={incidentCauses} />
     </>
   );
 };
