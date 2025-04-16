@@ -22,6 +22,8 @@ export default function Province() {
   const navigate = useNavigate();
   const { provinces, error, status } = useAppSelector((state) => state.province);
 
+ 
+
   const {
     register,
     handleSubmit,
@@ -33,6 +35,7 @@ export default function Province() {
 
   React.useEffect(() => {
     dispatch(fetchProvinces());
+    console.log('Provinces:', provinces);
   }, [dispatch]);
 
   const onSubmit = async (data: CreateProvince) => {
@@ -102,11 +105,50 @@ export default function Province() {
                 provinces.map((province, index) => (
                 <tr key={province.id}>
                   <td>{index + 1}</td>
-                  <td>{province.name}</td>
+                  <td>{province.name} </td>
                   <td>{province.cities.length}</td>
                   <td style={{ width: '1%' }}>
                   <div className="d-flex gap-2 align-items-center justify-content-center">
-                    <Button variant="secondary">Affecter</Button>
+                    <Button
+                      variant={province.isProjectConcern ? "danger" : "secondary"}
+                      onClick={async () => {
+                      const toastId = toast.loading('Veuillez patienter...');
+                      try {
+                        const url = province.isProjectConcern
+                        ? `http://plaintes.celluleinfra.org:8181/api/v1/provinces/remove-to-project?provinces=${province.id}`
+                        : `http://plaintes.celluleinfra.org:8181/api/v1/provinces/add-to-project?provinces=${province.id}`;
+                        const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        });
+                        if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || (province.isProjectConcern
+                          ? "Erreur lors de la suppression de l'affectation de la province"
+                          : "Erreur lors de l'affectation de la province"));
+                        }
+                        toast.update(toastId, {
+                        render: province.isProjectConcern
+                          ? 'Province retirée avec succès'
+                          : 'Province affectée avec succès',
+                        type: 'success',
+                        isLoading: false,
+                        autoClose: 2000,
+                        });
+                      } catch (error) {
+                        toast.update(toastId, {
+                        render: error instanceof Error ? error.message : String(error),
+                        type: 'error',
+                        isLoading: false,
+                        autoClose: 3000,
+                        });
+                      }
+                      }}
+                    >
+                      {province.isProjectConcern ? "Retirer" : "Affecter"}
+                    </Button>
                     <Button disabled={!province.cities.length} onClick={() => navigate(province.id)}>
                     Villes
                     </Button>
