@@ -5,7 +5,8 @@ import RegisterVictimes from './RegisterVictimes';
 import { RegerationFormType } from 'features/dataManagement/registrationSteps/registrationStepsType';
 import { AnonymousRegistrationForm } from 'features/dataManagement/anonynousRegistrationSteps/anonynousRegistrationStepsType';
 import { ComplaintRegistrationForm } from 'features/dataManagement/complainantComplaintSteps/complainantComplaintStepsType';
-
+//
+import { useAppSelector } from 'app/hooks';
 interface Form6FinalSubmitProps {
   prevStep: () => void;
   onSubmit: () => Promise<void>;
@@ -14,16 +15,17 @@ interface Form6FinalSubmitProps {
   deleteVictimeByIndex: (index: number) => void;
   formData: RegerationFormType | AnonymousRegistrationForm | ComplaintRegistrationForm;
 }
-
+ //const { professions } = useAppSelector((state) => state.profession);
+// Removed from global scope
 // Form6FinalSubmit component
-const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
+const FormSummary: React.FC<{ formData: any; provinces: any[] }> = ({ formData, provinces }) => {
   const {
     description,
     incidentStartDate,
     incidentEndDate,
     addressLine1,
     isComplainantAffected,
-    province,
+    // Removed unused variable
     city,
     sector,
     village,
@@ -113,19 +115,36 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
               </tr>
               <tr>
                 <th style={styles.th}>Province</th>
-                <td style={styles.td}>{province || 'Non renseignée'}</td>
+                <td style={styles.td}>{provinces.find((province: any) => province.id === complainant.province)?.name || 'Non renseignée'}</td>
               </tr>
               <tr>
                 <th style={styles.th}>Ville</th>
-                <td style={styles.td}>{city || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {provinces.find((province: any) => province.cities?.some((c: any) => c.id === city))?.cities?.find((c: any) => c.id === city)?.name || 'Non renseignée'}
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Secteur</th>
-                <td style={styles.td}>{sector || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {
+                    provinces
+                      .find((province: any) => province.cities?.some((c: any) => c.id === city))
+                      ?.cities?.find((c: any) => c.id === city)
+                      ?.sectors?.find((s: any) => s.id === sector)?.name || 'Non renseignée'
+                  }
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Village</th>
-                <td style={styles.td}>{village || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {
+                    provinces
+                      .find((province: any) => province.cities?.some((c: any) => c.id === city))
+                      ?.cities?.find((c: any) => c.id === city)
+                      ?.sectors?.find((s: any) => s.id === sector)
+                      ?.villages?.find((v: any) => v.id === village)?.name || 'Non renseignée'
+                  }
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Profession</th>
@@ -179,6 +198,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
   formData
 }) => {
   const { handleSubmit } = useForm();
+  const { provinces } = useAppSelector((state) => state.province); // Moved here to ensure proper scope
 
   return (
     <>
@@ -205,7 +225,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
           Envoyer
         </Button>
       </Form>
-      <FormSummary formData={formData} />
+      <FormSummary formData={formData} provinces={provinces} />
     </>
   );
 };
