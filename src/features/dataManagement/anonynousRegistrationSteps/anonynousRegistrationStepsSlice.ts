@@ -27,7 +27,7 @@ const initialState: InitialState = {
     village: '',
     type: '',
     victims: [],
-    species: []
+    species: [],
   }
 };
 

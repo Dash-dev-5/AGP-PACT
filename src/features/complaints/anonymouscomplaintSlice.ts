@@ -15,7 +15,7 @@ export interface Complaint {
   city: string;
   sector: string;
   village: string;
-  incidentCause: string;
+  type: string;
   victims: Victim[];
   species: Species[];
 }

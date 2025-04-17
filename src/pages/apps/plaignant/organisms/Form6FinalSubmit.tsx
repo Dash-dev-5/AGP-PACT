@@ -5,7 +5,8 @@ import RegisterVictimes from './RegisterVictimes';
 import { RegerationFormType } from 'features/dataManagement/registrationSteps/registrationStepsType';
 import { AnonymousRegistrationForm } from 'features/dataManagement/anonynousRegistrationSteps/anonynousRegistrationStepsType';
 import { ComplaintRegistrationForm } from 'features/dataManagement/complainantComplaintSteps/complainantComplaintStepsType';
-
+//
+import { useAppSelector } from 'app/hooks';
 interface Form6FinalSubmitProps {
   prevStep: () => void;
   onSubmit: () => Promise<void>;
@@ -14,23 +15,29 @@ interface Form6FinalSubmitProps {
   deleteVictimeByIndex: (index: number) => void;
   formData: RegerationFormType | AnonymousRegistrationForm | ComplaintRegistrationForm;
 }
-
+//const { professions } = useAppSelector((state) => state.profession);
+// Removed from global scope
 // Form6FinalSubmit component
-const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
+const FormSummary: React.FC<{ formData: any; provinces: any[]; professions: any[]; incidentCauses: any[] }> = ({
+  formData,
+  provinces,
+  professions,
+  incidentCauses
+}) => {
   const {
     description,
     incidentStartDate,
     incidentEndDate,
     addressLine1,
     isComplainantAffected,
-    province,
+    // Removed unused variable
     city,
     sector,
     village,
     type,
     isSensitive,
     species,
-    complainant,
+    complainant
   } = formData;
 
   const formatDate = (dateString: string) => {
@@ -62,13 +69,12 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           </tr>
           <tr>
             <th style={styles.th}>Le plaignant est-il affecté ?</th>
-            <td style={styles.td}>
-              {isComplainantAffected === true ? 'Oui' : isComplainantAffected === false ? 'Non' : 'Non renseigné'}
-            </td>
+            <td style={styles.td}></td>
+            <td style={styles.td}>{isComplainantAffected === true ? 'Oui' : isComplainantAffected === false ? 'Non' : 'Non renseigné'}</td>
           </tr>
           <tr>
             <th style={styles.th}>Type d'incident</th>
-            <td style={styles.td}>{type || 'Non renseignée'}</td>
+            <td style={styles.td}>{incidentCauses.find((incidentCause) => incidentCause.id === type)?.name || 'Non renseignée'}</td>
           </tr>
           <tr>
             <th style={styles.th}>Incident sensible</th>
@@ -78,7 +84,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {complainant && (
             <>
               <tr>
-                <th style={{...styles.th, ...styles.sectionTitle}} colSpan={2}>
+                <th style={{ ...styles.th, ...styles.sectionTitle }} colSpan={2}>
                   Informations du Plaignant
                 </th>
               </tr>
@@ -112,23 +118,42 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
               </tr>
               <tr>
                 <th style={styles.th}>Province</th>
-                <td style={styles.td}>{province || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {provinces.find((province: any) => province.id === complainant.province)?.name || 'Non renseignée'}
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Ville</th>
-                <td style={styles.td}>{city || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {provinces
+                    .find((province: any) => province.cities?.some((c: any) => c.id === city))
+                    ?.cities?.find((c: any) => c.id === city)?.name || 'Non renseignée'}
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Secteur</th>
-                <td style={styles.td}>{sector || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {provinces
+                    .find((province: any) => province.cities?.some((c: any) => c.id === city))
+                    ?.cities?.find((c: any) => c.id === city)
+                    ?.sectors?.find((s: any) => s.id === sector)?.name || 'Non renseignée'}
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Village</th>
-                <td style={styles.td}>{village || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {provinces
+                    .find((province: any) => province.cities?.some((c: any) => c.id === city))
+                    ?.cities?.find((c: any) => c.id === city)
+                    ?.sectors?.find((s: any) => s.id === sector)
+                    ?.villages?.find((v: any) => v.id === village)?.name || 'Non renseignée'}
+                </td>
               </tr>
               <tr>
                 <th style={styles.th}>Profession</th>
-                <td style={styles.td}>{complainant.profession || 'Non renseignée'}</td>
+                <td style={styles.td}>
+                  {professions.find((profession) => profession.id === complainant.profession)?.name || 'Non renseignée'}
+                </td>
               </tr>
             </>
           )}
@@ -136,7 +161,7 @@ const FormSummary: React.FC<{ formData: any }> = ({ formData }) => {
           {species && species.length > 0 && (
             <>
               <tr>
-                <th style={{...styles.th, ...styles.sectionTitle}} colSpan={2}>
+                <th style={{ ...styles.th, ...styles.sectionTitle }} colSpan={2}>
                   Espèces Affectées
                 </th>
               </tr>
@@ -178,10 +203,12 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
   formData
 }) => {
   const { handleSubmit } = useForm();
+  const { provinces } = useAppSelector((state) => state.province); // Moved here to ensure proper scope
+  const { professions } = useAppSelector((state) => state.profession);
+  const { incidentCauses } = useAppSelector((state) => state.type);
 
   return (
     <>
-     
       <RegisterVictimes
         saveVictimesData={saveVictimesData}
         updateVictimeByIndex={updateVictimeByIndex}
@@ -204,7 +231,7 @@ const Form6FinalSubmit: React.FC<Form6FinalSubmitProps> = ({
           Envoyer
         </Button>
       </Form>
-      <FormSummary formData={formData} />
+      <FormSummary formData={formData} provinces={provinces} professions={professions} incidentCauses={incidentCauses} />
     </>
   );
 };
@@ -218,49 +245,48 @@ const styles = {
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     width: '100%', // Pour que le tableau occupe la largeur du conteneur
-    overflowX: 'auto', // Pour gérer les tableaux potentiellement larges sur les petits écrans
+    overflowX: 'auto' as 'auto' // Pour gérer les tableaux potentiellement larges sur les petits écrans
   },
   title: {
     marginBottom: '20px',
     color: '#333',
     fontSize: '1.5em',
     fontWeight: 'bold',
-    textAlign: 'left',
+    textAlign: 'left' as 'left' // Added explicit type casting
   },
   table: {
     width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '10px',
+    borderCollapse: 'collapse' as 'collapse', // Explicitly cast to the correct type
+    marginTop: '10px'
   },
   th: {
     border: '1px solid #ddd',
     padding: '10px',
-    textAlign: 'left',
+    textAlign: 'left' as 'left', // Added explicit type casting
     fontWeight: 'bold',
     backgroundColor: '#f2f2f2',
     fontSize: '0.95em',
-    color: '#333',
+    color: '#333'
   },
   td: {
     border: '1px solid #ddd',
     padding: '10px',
     fontSize: '0.95em',
-    color: '#444',
+    color: '#444'
   },
   sectionTitle: {
     fontWeight: 'bold',
     padding: '12px 10px',
     backgroundColor: '#e0e0e0',
     color: '#333',
-    textAlign: 'left',
-    fontSize: '1.1em',
+    textAlign: 'left' as 'left', // Added explicit type casting
+    fontSize: '1.1em'
   },
   emptyMessage: {
     padding: '15px',
     fontStyle: 'italic',
     color: '#777',
-    textAlign: 'center',
-  },
+    textAlign: 'center' as 'center' // Added explicit type casting
+  }
 };
 export default Form6FinalSubmit;
-

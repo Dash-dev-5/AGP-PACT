@@ -34,7 +34,7 @@ export const createQuestion = createAsyncThunk<Question, Question>('questions/cr
 
     return response.data;
   } catch (error) {
-    return rejectWithValue(parseError(error));
+    return rejectWithValue(parseError(error)); 
   }
 });
 
