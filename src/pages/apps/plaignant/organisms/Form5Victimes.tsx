@@ -286,7 +286,7 @@ const Form5Victimes: React.FC<Form5VictimesProps> = ({
       </div>
      
         {!watch('isSensitive') && (
-          <div className="species-data-section">
+          <div className="species-data-section"> 
             <Form5VictimesEspeces
               saveSpeciesData={saveSpeciesData}
               formData={formData}

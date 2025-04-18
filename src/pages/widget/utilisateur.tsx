@@ -26,7 +26,7 @@ export default function Utilisateur() {
   const dispatch = useAppDispatch();
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
+  const [selectedRole, setSelectedRole] = useState<string>(''); // État pour le rôle sélectionné
   //Fetch all provinces
   useEffect(() => {
     fetchAllCommittees()
@@ -221,17 +221,42 @@ export default function Utilisateur() {
                 <Form.Label>Mot de passe</Form.Label>
                 <Form.Control type="password" {...register('password')} required />
               </Form.Group>
-              <Form.Group controlId="province" className="col-4">
-                <Form.Label>Comité</Form.Label>
-                <Form.Control as="select" {...register('committee')} required>
-                  <option value="">Sélectionnez un comité</option>
-                  {committees.map((c, index) => (
+                <div className="row mb-2">
+                <Form.Group controlId="role" className="col-4">
+                  <Form.Label>Rôle</Form.Label>
+                  <Form.Control
+                  as="select"
+                  {...register('role')}
+                  required
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  >
+                  <option value="">Sélectionnez un rôle</option>
+                  <option value="committee">Comité</option>
+                  <option value="admin">Admin</option>
+                  <option value="ong">ONG</option>
+                  <option value="committee_group">Groupe de comité</option>
+                  <option value="manager">Manager</option>
+                  </Form.Control>
+                </Form.Group>
+                </div>
+                {selectedRole && selectedRole !== 'admin' && (
+                <div className="row mb-2">
+                  <Form.Group controlId="committee" className="col-4">
+                  <Form.Label>Comité</Form.Label>
+                  <Form.Control as="select" {...register('committee')} required>
+                    <option value="">Sélectionnez un comité</option>
+                    {committees.map((c, index) => (
                     <option key={index} value={c.id}>
                       {c.name}
                     </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+                    ))}
+                  </Form.Control>
+                  </Form.Group>
+                </div>
+                )}
+           
+
             </div>
 
             <Button variant="primary" type="submit" className="mt-3" disabled={isLoading}>
