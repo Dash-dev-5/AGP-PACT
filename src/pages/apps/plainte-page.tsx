@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Badge, Button, Col, Form, Pagination, Row, Table, Spinner } from 'react-bootstrap';
 import CreateChooseCreate from './modalPlainte';
@@ -36,6 +37,26 @@ const PlaintePage = () => {
     setCurrentPageState(pageNumber);
   };
 
+  // Function to export data to Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      complaints.data.map((item, index) => ({
+        "#": index + 1 + pageSize * currentPageState,
+        "Nom plaignant": item.complainant ? `${item.complainant.firstName} ${item.complainant.lastName}` : '',
+        "Téléphone": item.complainant ? item.complainant.phone : '-',
+        "Date": item.createdAt
+          ? new Intl.DateTimeFormat('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(item.createdAt))
+          : '-',
+        "Village": item.villageName,
+        "Statut": item.isEligible === false ? 'Rejeté' : item.status === 'In progress' ? 'En cours' : item.status === 'Closed' ? 'Clôturé' : 'En attente'
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Plaintes');
+    XLSX.writeFile(workbook, 'Plaintes.xlsx');
+  };
+
   return (
     <>
       <Row>
@@ -45,6 +66,12 @@ const PlaintePage = () => {
       <Row className="align-items-center g-3 mt-3">
         <Col xs={12} md={4}>
           <Form.Control type="text" placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        </Col>
+
+        <Col xs="auto" className="ms-auto">
+          <Button variant="success" onClick={exportToExcel}>
+            Exporter vers Excel
+          </Button>
         </Col>
 
         <Col xs="auto" className="ms-auto">
