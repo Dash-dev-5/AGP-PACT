@@ -90,47 +90,88 @@ const PlaintePage = () => {
           <>
             <Table striped bordered hover responsive className="table-sm">
               <thead className="table-dark">
-                <tr>
-                  <th>#</th>
-                  <th>Nom plaignant</th>
-                  <th>Téléphone</th>
-                  <th>Date</th>
-                  <th>Village</th>
-                  <th>Statut</th>
-                </tr>
+              <tr>
+                <th>#</th>
+                <th>Nom plaignant</th>
+                <th>Téléphone</th>
+                <th>Date</th>
+                <th>Village</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
               </thead>
               <tbody>
-                {complaints.data.map((item, index) => {
-                  const startIndex = pageSize * currentPageState;
-                  return (
-                    <tr key={item.id} onClick={() => navigate(`${item.id}`)} style={{ cursor: 'pointer' }}>
-                      <td>{index + 1 + startIndex}</td>
-                      <td>{item.complainant ? `${item.complainant.firstName} ${item.complainant.lastName}` : ''}</td>
-                      <td>{item.complainant ? item.complainant.phone : '-'}</td>
-                      <td>
-                        {item.createdAt
-                          ? new Intl.DateTimeFormat('fr-FR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit'
-                            }).format(new Date(item.createdAt))
-                          : '-'}
-                      </td>
-                      <td>{item.villageName}</td>
-                      <td className="text-center">
-                        {item.isEligible === false ? (
-                          <Badge bg="danger">Rejeté</Badge>
-                        ) : item.status === 'In progress' ? (
-                          <Badge bg="secondary">En cours</Badge>
-                        ) : item.status === 'Closed' ? (
-                          <Badge bg="success">Clôturé</Badge>
-                        ) : (
-                          <Badge bg="warning">En attente</Badge>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+              {complaints.data.map((item, index) => {
+                const startIndex = pageSize * currentPageState;
+
+                const handleFileUpload = async (file: File) => {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                  const response = await fetch(`http://plaintes.celluleinfra.org:8181/api/v1/uploads/${item.id}`, {
+                  method: 'POST',
+                  body: formData,
+                  });
+
+                  if (response.ok) {
+                  alert('Fichier téléchargé avec succès');
+                  } else {
+                  alert('Échec du téléchargement du fichier');
+                  }
+                } catch (error) {
+                  console.error('Erreur lors du téléchargement du fichier:', error);
+                  alert('Erreur lors du téléchargement du fichier');
+                }
+                };
+
+                const handleUploadClick = () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '*/*';
+                input.onchange = (event: any) => {
+                  const file = event.target.files[0];
+                  if (file) {
+                  handleFileUpload(file);
+                  }
+                };
+                input.click();
+                };
+
+                return (
+                <tr key={item.id} onClick={() => navigate(`${item.id}`)} style={{ cursor: 'pointer' }}>
+                  <td>{index + 1 + startIndex}</td>
+                  <td>{item.complainant ? `${item.complainant.firstName} ${item.complainant.lastName}` : ''}</td>
+                  <td>{item.complainant ? item.complainant.phone : '-'}</td>
+                  <td>
+                  {item.createdAt
+                    ? new Intl.DateTimeFormat('fr-FR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                    }).format(new Date(item.createdAt))
+                    : '-'}
+                  </td>
+                  <td>{item.villageName}</td>
+                  <td className="text-center">
+                  {item.isEligible === false ? (
+                    <Badge bg="danger">Rejeté</Badge>
+                  ) : item.status === 'In progress' ? (
+                    <Badge bg="secondary">En cours</Badge>
+                  ) : item.status === 'Closed' ? (
+                    <Badge bg="success">Clôturé</Badge>
+                  ) : (
+                    <Badge bg="warning">En attente</Badge>
+                  )}
+                  </td>
+                  <td>
+                  <Button variant="info" size="sm" onClick={handleUploadClick}>
+                    Télécharger un fichier
+                  </Button>
+                  </td>
+                </tr>
+                );
+              })}
               </tbody>
             </Table>
 
