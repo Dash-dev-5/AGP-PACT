@@ -273,6 +273,7 @@ const Form3APhysique: React.FC<Form3APhysiqueProps> = ({ formData, prevStep, sav
                     {vulnerable.name}
                   </option>
                 ))}
+                <option value="autre">Autre</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">{errors.vulnerabilityLevel?.message}</Form.Control.Feedback>
             </Form.Group>

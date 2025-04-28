@@ -14,14 +14,8 @@ import { fetchGroupCommitees } from 'features/groupCommittes/groupCommiteesSlice
 export default function Commitee() {
   const { register, handleSubmit, reset } = useForm<Commitees>();
   const [show, setShow] = useState(false);
-  const [detailsShow, setDetailsShow] = useState(false); // For details modal
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [currentPageState, setCurrentPageState] = useState<number>(0);
-  const [selectedCommittee, setSelectedCommittee] = useState<null | Commitees>(null);
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [reportData, setReportData] = useState<any>(null);
-
   const { committees, status, error, createStatus } = useAppSelector((state) => state.committee);
   const { groupCommittees } = useAppSelector((state) => state.groupCommitees);
 
@@ -29,17 +23,12 @@ export default function Commitee() {
   const dispatch = useAppDispatch();
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-  const handleDetailsClose = () => {
-    setDetailsShow(false);
-    setStartDate('');
-    setEndDate('');
-    setReportData(null);
-  };
 
   useEffect(() => {
     dispatch(fetchGroupCommitees());
   }, [dispatch]);
 
+  // Fetch all committees with updated logic
   const pageSize = 12;
   useEffect(() => {
     if (status !== 'loading') {
@@ -47,6 +36,7 @@ export default function Commitee() {
     }
   }, [dispatch, currentPageState, searchTerm]);
 
+  // Retrieve 'page' parameter from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const page = params.get('page');
@@ -55,33 +45,14 @@ export default function Commitee() {
     }
   }, [location.search]);
 
+  // Paginate with error prevention
   const totalPages = committees?.data ? Math.ceil(committees.data.length / pageSize) : 0;
   const handlePageChange = (pageNumber: number) => {
     navigate(`?page=${pageNumber}`);
     setCurrentPageState(pageNumber);
   };
 
-  const fetchDetailsReport = async (id: string) => {
-    if (!startDate || !endDate) {
-      toast.error("Veuillez sélectionner une période valide avant de charger les détails.");
-      return;
-    }
-    try {
-
-      console.log("Fetching report for ID: ", id);
-      console.log("Start Date: ", startDate);
-      console.log("End Date: ", endDate);
-      const response = await fetch(
-        `http://plaintes.celluleinfra.org:8181/api/v1/committees/repport/${id}?startDate=${startDate}&endDate=${endDate}`
-      );
-      const data = await response.json();
-      console.log("From details ",data);
-      setReportData(data);
-    } catch (error) {
-      toast.error("Erreur lors de la récupération du rapport détaillé.");
-    }
-  };
-
+  // Submit data with error handling
   const onSubmit = async (data: Commitees) => {
     const toastId = toast.loading('Enregistrement en cours...');
     try {
@@ -90,7 +61,7 @@ export default function Commitee() {
       handleClose();
       toast.update(toastId, { render: 'Comité créé avec succès!', type: 'success', isLoading: false, autoClose: 2000 });
       dispatch(fetchCommitteesAsync({ pageSize, currentPage: currentPageState, filter: searchTerm }));
-      window.location.reload();
+      window.location.reload(); // Force page reload after successful addition
     } catch (error) {
       toast.update(toastId, { render: String(error), type: 'error', isLoading: false, autoClose: 3000 });
     }
@@ -123,29 +94,28 @@ export default function Commitee() {
               <th>Axe</th>
               <th>Localisation</th>
               <th>Action</th>
-              <th>Détails</th>
             </tr>
           </thead>
           <tbody>
             {status === 'loading' && (
               <tr>
-                <td colSpan={6} className="text-center">
+                <td colSpan={5} className="text-center">
                   <Spinner size="sm" />
                 </td>
               </tr>
             )}
             {status === 'failed' && (
               <tr>
-                <td colSpan={6} className="text-center">
+                <td colSpan={5} className="text-center">
                   {error || 'Une erreur est survenue.'}
                 </td>
               </tr>
             )}
             {status === 'succeeded' && committees?.data?.length > 0 &&
-              committees.data.map((item, index) => (
+              (committees?.data || []).map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{item.name}</td>
+                  <td>{item.name} {item.id}</td>
                   <td>{item.groupName}</td>
                   <td>{item.villages?.map((village) => village.name).join(', ')}</td>
                   <td>
@@ -154,22 +124,11 @@ export default function Commitee() {
                       {item.id && item.name && <DeleteCommitee id={item.id} name={item.name} />}
                     </div>
                   </td>
-                  <td>
-                    <Button
-                      variant="info"
-                      onClick={() => {
-                        setSelectedCommittee(item);
-                        setDetailsShow(true); // Open modal for date selection
-                      }}
-                    >
-                      Voir les détails
-                    </Button>
-                  </td>
                 </tr>
               ))}
             {status === 'succeeded' && (!committees?.data || committees.data.length === 0) && (
               <tr>
-                <td colSpan={6} className="text-center">
+                <td colSpan={5} className="text-center">
                   Aucun comité trouvé.
                 </td>
               </tr>
@@ -198,57 +157,6 @@ export default function Commitee() {
           </Pagination>
         )}
       </div>
-
-      {/* Details Modal */}
-      {detailsShow && (
-        <Modal show={detailsShow} onHide={handleDetailsClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Veuillez sélectionner une période</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group controlId="startDate" className="mb-3">
-              <Form.Label>Date de début</Form.Label>
-              <Form.Control
-                type="date"
-                value={startDate || ''}
-                onChange={(e) => setStartDate(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="endDate" className="mb-3">
-              <Form.Label>Date de fin</Form.Label>
-              <Form.Control
-                type="date"
-                value={endDate || ''}
-                onChange={(e) => setEndDate(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Button
-              variant="primary"
-              onClick={() => {
-                if (selectedCommittee?.id) {
-                  fetchDetailsReport(selectedCommittee.id); //
-                  fetchDetailsReport(selectedCommittee.id); // Fetch report after dates are validated
-                }
-              }}
-              disabled={!startDate || !endDate} // Button disabled until both dates are selected
-            >
-              Charger les détails
-            </Button>
-            {reportData ? (
-              <div>
-                <h5>Détails du Rapport</h5>
-                {/* Render the report data dynamically */}
-                <pre>{JSON.stringify(reportData, null, 2)}</pre>
-              </div>
-            ) : (
-              <div className="text-center">Aucun rapport chargé.</div>
-            )}
-          </Modal.Body>
-        </Modal>
-      )}
-
       {show && (
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton>

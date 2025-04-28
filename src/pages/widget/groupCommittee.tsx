@@ -33,12 +33,14 @@ export default function GroupCommitee() {
       toast.update(toastId, { render: 'Groupe de Comité créé avec succès !', type: 'success', isLoading: false, autoClose: 5000 });
       reset();
       handleClose();
+      // Force page reload after successful addition
+      window.location.reload();
     } catch (error) {
       toast.update(toastId, {
         render: 'Erreur lors de la création du groupe de comité.',
         type: 'error',
         isLoading: false,
-        autoClose: 5000
+        autoClose: 5000,
       });
     }
   };
@@ -99,22 +101,28 @@ export default function GroupCommitee() {
                     </td>
                   </tr>
                 )}
-                {status === 'succeeded' &&
+                {status === 'succeeded' && filteredGroupCommittees.length > 0 &&
                   filteredGroupCommittees.map((item, index) => (
                     <tr key={index}>
                       <td>{item.name}</td>
-                      <td className="text-center">{item.committees.length}</td>
+                      <td className="text-center">{item.committees?.length || 0}</td>
                       <td className="d-flex gap-2 align-items-center justify-content-center">
                         {item.id && item.name && <UpdateCommiteeGroup id={item.id} currentName={item.name} />}
                         {item.id && item.name && <DeleteCommiteeGroup id={item.id} name={item.name} />}
                       </td>
                     </tr>
                   ))}
-
+                {status === 'succeeded' && filteredGroupCommittees.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="text-center text-secondary">
+                      Aucun groupe de comité trouvé.
+                    </td>
+                  </tr>
+                )}
                 {status === 'failed' && (
                   <tr>
                     <td colSpan={3} className="text-center text-danger">
-                      {createError}
+                      {createError || 'Erreur de chargement des données.'}
                     </td>
                   </tr>
                 )}
@@ -123,7 +131,7 @@ export default function GroupCommitee() {
           </Col>
         </Row>
 
-        {/* Bootstrap Pagination */}
+        {/* Pagination */}
         <div className="d-flex justify-content-center mt-3">
           <Pagination>
             <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
