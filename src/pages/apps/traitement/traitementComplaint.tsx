@@ -31,6 +31,7 @@ import { Complaint, proposedSolution } from 'features/complaint/complaintType';
 import CustomToast from 'components/customToast';
 import { uploadImageToCloudinary } from 'utils/ImageUploader';
 import { Badge } from 'react-bootstrap';
+import useAuth from 'hooks/useAuth';
 
 export default function TreatmentComplaint() {
   //complaint id
@@ -60,6 +61,8 @@ export default function TreatmentComplaint() {
   const dispatch = useAppDispatch();
   const { traitementData, loading } = useSelector((state: RootState) => state.traitement);
   const { committees } = useAppSelector((state) => state.committee);
+  const { user } = useAuth();
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -76,6 +79,7 @@ export default function TreatmentComplaint() {
   //Dowland urls files
   const handleUpload = async () => {
     const uploadedUrls: string[] = [];
+    const token = user?.token;
 
     for (const file of selectedFiles) {
       if (file.size > 5 * 1024 * 1024) {
@@ -84,7 +88,7 @@ export default function TreatmentComplaint() {
         continue;
       }
 
-      const url = await uploadImageToCloudinary(file);
+      const url = await uploadImageToCloudinary(file,token || '');
       if (url) {
         uploadedUrls.push(url);
       }

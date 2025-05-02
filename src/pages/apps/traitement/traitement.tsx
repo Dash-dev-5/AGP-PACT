@@ -34,6 +34,8 @@ import { uploadImageToCloudinary } from 'utils/ImageUploader';
 import { fetchComplaintTypesAsync } from 'features/complaintType/complaintTypeSlice';
 import { fetchPrejudicesAsync, Prejudice } from 'features/prejudice/prejudiceSlice';
 import { Badge } from 'react-bootstrap';
+import useAuth from 'hooks/useAuth';
+
 
 export default function VerticalLinearStepper() { 
   //complaint id
@@ -67,7 +69,8 @@ export default function VerticalLinearStepper() {
   const [filteredPrejudices, setFilteredPrejudices] = React.useState<Prejudice[]>([]);
   const [complaintMessageStepEight, setComplaintMessageStepEight] = React.useState<string>('');
   const [complaintMessageStepNine, setComplaintMessageStepNine] = React.useState<string>('');
-
+  const { user } = useAuth();
+  
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -83,6 +86,7 @@ export default function VerticalLinearStepper() {
   //Dowland urls files
   const handleUpload = async () => {
     const uploadedUrls: string[] = [];
+    const token = user?.token;
 
     for (const file of selectedFiles) {
       if (file.size > 5 * 1024 * 1024) {
@@ -91,7 +95,7 @@ export default function VerticalLinearStepper() {
         continue;
       }
 
-      const url = await uploadImageToCloudinary(file);
+      const url = await uploadImageToCloudinary(file, token || '');
       if (url) {
         uploadedUrls.push(url);
       }
@@ -842,22 +846,48 @@ export default function VerticalLinearStepper() {
 
     switch (stepPosition) {
       case 1:
-        return `Plainte enregistrée : ${oneComplaint.code} \n
-          Date traitée : ${oneComplaint.tracking?.[0]?.dueDate}\n
-          Date de début : ${oneComplaint.tracking?.[0]?.startDate}\n
-          Date de fin : ${oneComplaint.tracking?.[0]?.endDate}\n
-
-          Délai normal : ${oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint}
-          Délai urgent : ${oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint}\n
-          Délai prioritaire : ${oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint}
-          `;
-      case 2:
-        return [`Type: ${oneComplaint.prejudice?.typeName || 'N/A'}`, `Préjudice: ${oneComplaint.prejudice?.name || 'N/A'}`];
-      case 3:
-        return oneComplaint.isEligible ? 'Plainte éligible' : 'Plainte non éligible';
+        return [
+          `Plainte enregistrée : ${oneComplaint.code}`,
+          `Date traitée : ${oneComplaint.tracking?.[0]?.dueDate ? new Date(oneComplaint.tracking?.[0]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          `Date de début : ${oneComplaint.tracking?.[0]?.startDate ? new Date(oneComplaint.tracking?.[0]?.startDate).toLocaleDateString() : 'non défini'}`,
+          `Date de fin : ${oneComplaint.tracking?.[0]?.endDate ? new Date(oneComplaint.tracking?.[0]?.endDate).toLocaleDateString() : 'non défini'}`,
+          oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
+          oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
+          oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+        ];
+            case 2:
+        return [
+          `Type: ${oneComplaint.prejudice?.typeName || 'non défini'}`,
+          `Préjudice: ${oneComplaint.prejudice?.name || 'non défini'}`,
+          `Date traitée : ${oneComplaint.tracking?.[1]?.dueDate ? new Date(oneComplaint.tracking?.[1]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          `Date de début : ${oneComplaint.tracking?.[1]?.startDate ? new Date(oneComplaint.tracking?.[1]?.startDate).toLocaleDateString() : 'non défini'}`,
+          `Date de fin : ${oneComplaint.tracking?.[1]?.endDate ? new Date(oneComplaint.tracking?.[1]?.endDate).toLocaleDateString() : 'non défini'}`,
+          oneComplaint.tracking?.[1]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[1]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
+          oneComplaint.tracking?.[1]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[1]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
+          oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+        ];
+            case 3:
+        return [
+          oneComplaint.isEligible ? 'Plainte éligible' : 'Plainte non éligible',
+          `Date traitée : ${oneComplaint.tracking?.[2]?.dueDate ? new Date(oneComplaint.tracking?.[2]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          `Date de début : ${oneComplaint.tracking?.[2]?.startDate ? new Date(oneComplaint.tracking?.[2]?.startDate).toLocaleDateString() : 'non défini'}`,
+          `Date de fin : ${oneComplaint.tracking?.[2]?.endDate ? new Date(oneComplaint.tracking?.[2]?.endDate).toLocaleDateString() : 'non défini'}`,
+          oneComplaint.tracking?.[2]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[2]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
+          oneComplaint.tracking?.[2]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[2]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
+          oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+        ];
       case 4: {
         const track4 = oneComplaint.tracking?.find((t) => t.position === 4);
-        return [`Solution proposée: ${track4?.proposedSolution?.response || 'N/A'}`, `Total price: ${oneComplaint.totalPrice} FC`];
+        return [
+          `Solution proposée: ${track4?.proposedSolution?.response || 'N/A'}`,
+          `Total price: ${oneComplaint.totalPrice} FC`,
+          `Date traitée : ${oneComplaint.tracking?.[3]?.dueDate ? new Date(oneComplaint.tracking?.[3]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          `Date de début : ${oneComplaint.tracking?.[3]?.startDate ? new Date(oneComplaint.tracking?.[3]?.startDate).toLocaleDateString() : 'non défini'}`,
+          `Date de fin : ${oneComplaint.tracking?.[3]?.endDate ? new Date(oneComplaint.tracking?.[3]?.endDate).toLocaleDateString() : 'non défini'}`,
+          oneComplaint.tracking?.[3]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[3]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
+          oneComplaint.tracking?.[3]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[3]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
+          oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+        ];
       }
       // Add summaries for other steps
       default:
