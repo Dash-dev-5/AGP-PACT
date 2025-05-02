@@ -593,7 +593,7 @@ export default function TreatmentComplaint() {
               return (
                 <Step key={step.position}>
                   <StepLabel>
-                    <Typography variant="h6" sx={{ fontWeight: index === activeStep ? 'bold' : 'normal' }}>
+                    <Typography variant="h6" sx={{ fontWeight: index === activeStep ? 'bold' : 'normal', fontSize: 16 }}>
                       {step.name}
                     </Typography>
                     {/* Show summary for completed steps */}

@@ -128,21 +128,31 @@ const DetailComplait = () => {
                         <span translate="no">{oneComplaint.complainant.villageName}</span>
                       </div>
                     </div>
+                  </div>
+                  <div className="row mb-3">
                     <div className="col-4">
                       <div className="d-flex flex-column">
-                        <strong>Type</strong>
-                        <span translate="no">{oneComplaint.complainant.type}</span>
+                        <strong>Adresse</strong>
+                        <span translate="no">{oneComplaint?.complainant?.addressLine1}</span>
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      <div className="d-flex flex-column">
+                        <strong>Niveau de vulnerabilite</strong>
+                        <span translate="no">
+                          {oneComplaint?.complainant?.vulnerabilityLevelName === 'Autres'
+                            ? oneComplaint?.complainant?.otherVulnerability
+                            : oneComplaint?.complainant?.vulnerabilityLevelName}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      <div className="d-flex flex-column">
+                        <strong>Personnalite juridique</strong>
+                        <span translate="no">{oneComplaint?.complainant?.legalPersonality}</span>
                       </div>
                     </div>
                   </div>
-                  {/* <div style={{ flex: '0 0 48%', marginBottom: '10px', display: 'flex' }}>
-                    <strong style={{ width: '150px' }}>Adresse 1</strong>
-                    <span>: {detailComplaint?.complainant?.addressLine1}</span>
-                  </div>
-                  <div style={{ flex: '0 0 48%', marginBottom: '10px', display: 'flex' }}>
-                    <strong style={{ width: '150px' }}>Adresse 2</strong>
-                    <span>: {detailComplaint?.complainant?.addressLine2}</span>
-                  </div> */}
                 </AccordionDetails>
               </Accordion>
             )}
@@ -172,14 +182,29 @@ const DetailComplait = () => {
                   </div>
                 </div>
                 <div className="row mb-3">
-                  <div className="col-12">
+                  <div className="col-4">
                     <div className="d-flex flex-column" style={{ maxWidth: '100%' }}>
                       <strong>Description</strong>
                       <p style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>{oneComplaint?.description}</p>
                     </div>
                   </div>
-                </div>
-                <div className="row mb-3">
+                  <div className="col-4">
+                    <div className="d-flex flex-column" style={{ maxWidth: '100%' }}>
+                      <strong>Document associé</strong>
+                      {oneComplaint?.document ? (
+                        <a
+                          href={oneComplaint?.document}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ wordWrap: 'break-word', color: '#007bff' }}
+                        >
+                          Télécharger le document
+                        </a>
+                      ) : (
+                        <p>Aucun document disponible.</p>
+                      )}
+                    </div>
+                  </div>
                   <div className="col-4">
                     <div className="d-flex flex-column">
                       <strong>Email</strong>
@@ -188,6 +213,9 @@ const DetailComplait = () => {
                       </span>
                     </div>
                   </div>
+                </div>
+                <div className="row mb-3">
+                  
                   <div className="col-4">
                     <div className="d-flex flex-column">
                       <strong>Phone</strong>
@@ -200,14 +228,15 @@ const DetailComplait = () => {
                       <span>{oneComplaint?.provinceName}</span>
                     </div>
                   </div>
-                </div>
-                <div className="row mb-3">
                   <div className="col-4">
                     <div className="d-flex flex-column">
                       <strong>Ville</strong>
                       <span> {oneComplaint?.cityName}</span>
                     </div>
                   </div>
+                </div>
+                <div className="row mb-3">
+                  
                   <div className="col-4">
                     <div className="d-flex flex-column">
                       <strong>Secteur</strong>
@@ -220,8 +249,58 @@ const DetailComplait = () => {
                       <span>{oneComplaint?.villageName}</span>
                     </div>
                   </div>
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Adresse</strong>
+                      <span> {oneComplaint?.addressLine1}</span>
+                    </div>
+                  </div>
 
  
+                </div>
+                <div className="row mb-3">
+                  
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Longitude</strong>
+                      <span>{oneComplaint?.longitude != null ? oneComplaint?.longitude : 'Non definie'}</span>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Latitude</strong>
+                      <span>{oneComplaint?.latitude != null ? oneComplaint?.latitude : 'Non definie' }</span>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Code</strong>
+                      <span>{oneComplaint?.code}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Type de plainte</strong>
+                      <span>{oneComplaint?.type?.name === 'Autres'
+                            ? oneComplaint?.otherType
+                            : oneComplaint?.type?.name}</span>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>La plainte est</strong>
+                      <span>{oneComplaint?.isSensitive ? 'Sensible' : 'Non sensible' }</span>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="d-flex flex-column">
+                      <strong>Le plaignant est-il affecter?</strong>
+                      <span>{oneComplaint?.isComplainantAffected ? 'Oui' : 'Non' }</span>
+                    </div>
+                  </div>
                 </div>
               </AccordionDetails>
             </Accordion>

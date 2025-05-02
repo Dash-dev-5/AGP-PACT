@@ -94,8 +94,9 @@ const PlaintePage = () => {
                 <th>#</th>
                 <th>Nom plaignant</th>
                 <th>Téléphone</th>
-                <th>Date</th>
+                <th>Date d'enregistrement</th>
                 <th>Village</th>
+                <th>Etape de traitement</th>
                 <th>Statut</th>
                 <th>Actions</th>
               </tr>
@@ -109,10 +110,15 @@ const PlaintePage = () => {
                 formData.append('file', file);
 
                 try {
-                  const response = await fetch(`http://plaintes.celluleinfra.org:8181/api/v1/uploads/${item.id}`, {
+                  const response = await fetch(`http://localhost:8181/api/v1/uploads/${item.id}`, {
                   method: 'POST',
                   body: formData,
                   });
+
+                  // const response = await fetch(`http://plaintes.celluleinfra.org:8181/api/v1/uploads/${item.id}`, {
+                  // method: 'POST',
+                  // body: formData,
+                  // });
 
                   if (response.ok) {
                   alert('Fichier téléchargé avec succès');
@@ -153,12 +159,13 @@ const PlaintePage = () => {
                     : '-'}
                   </td>
                   <td>{item.villageName}</td>
+                  <td>{`${item.currentStep?.name}`}</td>
                   <td className="text-center">
                   {item.isEligible === false ? (
                     <Badge bg="danger">Rejeté</Badge>
-                  ) : item.status === 'In progress' ? (
+                  ) : item.status === 'ENCOURS' ? (
                     <Badge bg="secondary">En cours</Badge>
-                  ) : item.status === 'Closed' ? (
+                  ) : item.status === 'FERMER' ? (
                     <Badge bg="success">Clôturé</Badge>
                   ) : (
                     <Badge bg="warning">En attente</Badge>

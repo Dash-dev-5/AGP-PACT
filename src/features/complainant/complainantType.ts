@@ -50,6 +50,7 @@ export interface Complainant {
   professionId: string;
   vulnerabilityLevelName: string;
   vulnerabilityLevelId: string;
+  otherVulnerability:string;
   role: string;
   type: string;
 }

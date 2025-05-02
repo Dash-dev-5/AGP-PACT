@@ -45,6 +45,7 @@ const FormSummary: React.FC<{ formData: any; provinces: any[]; professions: any[
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+
   return (
     <div style={styles.container}>
       <h4 style={styles.title}>Récapitulatif de la Déclaration</h4>
@@ -69,8 +70,7 @@ const FormSummary: React.FC<{ formData: any; provinces: any[]; professions: any[
           </tr>
           <tr>
             <th style={styles.th}>Le plaignant est-il affecté ?</th>
-            <td style={styles.td}></td>
-            <td style={styles.td}>{isComplainantAffected === true ? 'Oui' : isComplainantAffected === false ? 'Non' : 'Non renseigné'}</td>
+            <td style={styles.td}>{isComplainantAffected ? 'Oui' : !isComplainantAffected ? 'Non' : 'Non renseigné'}</td>
           </tr>
           <tr>
             <th style={styles.th}>Type d'incident</th>

@@ -68,6 +68,7 @@ export interface CreateVictim {
 export interface Complaint {
   typeSend: 'Anonymous' | 'Nominal';
   description: string;
+  document:string;
   code: string;
   latitude: string;
   longitude: string;
@@ -94,8 +95,10 @@ export interface Complaint {
   villageName: string;
   villageId: string;
   status?: string;
+  otherType:string;
   site: Site;
   incidentActivityCause: ComplaintType;
+  type: ComplaintType;
   repairType: RepairType;
   responsibleEntity: ResponsibleEntity;
   complainant: Complainant;

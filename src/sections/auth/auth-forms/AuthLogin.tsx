@@ -80,7 +80,7 @@ export default function AuthLogin() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="email-login">Adresse e-mail</InputLabel>
+                <InputLabel htmlFor="email-login">Nom d'utilisateur</InputLabel>
                 <OutlinedInput
                   id="email-login"
                   type="email"
@@ -88,7 +88,7 @@ export default function AuthLogin() {
                   name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  placeholder="Enter email address"
+                  placeholder="Enter le nom d'utilisateur"
                   fullWidth
                   error={Boolean(touched.email && errors.email)}
                 />
