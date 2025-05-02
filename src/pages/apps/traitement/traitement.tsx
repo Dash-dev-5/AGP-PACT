@@ -20,7 +20,7 @@ import {
   updateFourStep,
   updateSecondStep,
   updateStepNine,
-  updateStepSevenOne,
+  // updateStepSevenOne,
   updateStepSevenTwo,
   updateStepSix,
   updateThreeStep
@@ -50,20 +50,20 @@ export default function VerticalLinearStepper() {
   const [completedSteps, setCompletedSteps] = React.useState<number[]>([]);
   const [formValues, setFormValues] = React.useState<Record<number, any>>({});
   const [loadingProvoked, setLoadingProvoked] = React.useState(true);
-  const [currentPageState, setCurrentPageState] = React.useState<number>(0);
-  const [detailsComplaints, setDetailsComplaints] = React.useState<Complaint>();
+  const [currentPageState] = React.useState<number>(0);
+  const [detailsComplaints] = React.useState<Complaint>();
   const [proposedSolutionsCommittee, setProposedSolutionsCommitee] = React.useState<proposedSolution>();
   const [showToast, setShowToast] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState('');
   const [toastType, setToastType] = React.useState<'success' | 'error'>('success');
-  const [image, setImage] = React.useState<File | null>(null);
-  const [imageUrl, setImageUrl] = React.useState<string | null>(null);
+  const [image] = React.useState<File | null>(null);
+  const [imageUrl] = React.useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = React.useState<string[]>([]);
   // const [activeStep, setActiveStep] = useState(1);
   const dispatch = useAppDispatch();
   const { traitementData, loading } = useSelector((state: RootState) => state.traitement);
-  const { committees } = useAppSelector((state) => state.committee);
+  // const { committees } = useAppSelector((state) => state.committee);
   const { prejudices } = useAppSelector((state) => state.prejudice);
   const { complaintTypes } = useAppSelector((state) => state.complaintType);
   const [filteredPrejudices, setFilteredPrejudices] = React.useState<Prejudice[]>([]);
@@ -71,11 +71,11 @@ export default function VerticalLinearStepper() {
   const [complaintMessageStepNine, setComplaintMessageStepNine] = React.useState<string>('');
   const { user } = useAuth();
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setImage(e.target.files[0]);
+  //   }
+  // };
   // Function to manage multiple file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -210,9 +210,9 @@ export default function VerticalLinearStepper() {
     setFormValues({});
   };
 
-  interface FileUploadProps {
-    onChange: (file: File | null) => void;
-  }
+  // interface FileUploadProps {
+  //   onChange: (file: File | null) => void;
+  // }
 
   const handleChange = (stepIndex: number, field: string, value: string) => {
     setFormValues((prevValues) => ({
@@ -226,7 +226,7 @@ export default function VerticalLinearStepper() {
 
   //Submit step two
   const handleSubmitStep = async (index: number) => {
-    const stepValues = formValues[index];
+    const stepValues = formValues[index] || {};
     const dataToSubmit = {
       prejudice: stepValues.prejudice,
       complaint: id !== undefined ? id : ''
@@ -236,7 +236,7 @@ export default function VerticalLinearStepper() {
       const result = await dispatch(updateSecondStep(dataToSubmit)).unwrap();
       if (result !== null) {
         putRequest(`processing-step/closed/Complaint/${id!}`)
-          .then((response) => {
+          .then(() => {
             setShowToast(true);
             setToastMessage(String('Etape cloturé avec success'));
             setToastType('success');
@@ -394,7 +394,7 @@ export default function VerticalLinearStepper() {
       escalateComplaintToStep3: stepValues.escalateComplaintToStep3 === 'true' ? false : true
     };
     try {
-      const result = await dispatch(updateStepSevenTwo(dataToSubmit)).unwrap();
+      await dispatch(updateStepSevenTwo(dataToSubmit)).unwrap();
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setCompletedSteps((prevCompleted) => [...prevCompleted, index]);
       if (dataToSubmit.escalateComplaintToStep3) {
@@ -425,7 +425,7 @@ export default function VerticalLinearStepper() {
       totalPrice: stepValues.totalPrice
     };
     try {
-      const result = await dispatch(updateEightStepOne(dataToSubmit)).unwrap();
+      await dispatch(updateEightStepOne(dataToSubmit)).unwrap();
       setComplaintMessageStepEight(
         "Merci pour votre proposition. Si le plaignant l'accepte, la plainte sera clôturée. Dans le cas contraire, nous passerons à l'étape neuf."
       );
@@ -474,7 +474,7 @@ export default function VerticalLinearStepper() {
   };
 
   // Add specific forms for each stage
-  const renderFormContent = (step: any, index: number) => {
+  const renderFormContent = (_step: any, index: number) => {
     switch (index) {
       case 0: // Form step one
         return (
@@ -787,7 +787,7 @@ export default function VerticalLinearStepper() {
           </>
         );
       case 8:
-        const tranking = oneComplaint?.tracking?.find((t) => t.position === 9);
+        // const tranking = oneComplaint?.tracking?.find((t) => t.position === 9);
         return (
           <>
             {oneComplaint?.status !== 'Closed' && (
@@ -869,6 +869,7 @@ export default function VerticalLinearStepper() {
             case 3:
         return [
           oneComplaint.isEligible ? 'Plainte éligible' : 'Plainte non éligible',
+          `Documents soumis : ${Array.isArray(oneComplaint.tracking?.[2]?.document) && oneComplaint.tracking?.[2]?.document.length ? oneComplaint.tracking?.[2]?.document.join(', ') : 'Aucun document soumis'}`,
           `Date traitée : ${oneComplaint.tracking?.[2]?.dueDate ? new Date(oneComplaint.tracking?.[2]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[2]?.startDate ? new Date(oneComplaint.tracking?.[2]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[2]?.endDate ? new Date(oneComplaint.tracking?.[2]?.endDate).toLocaleDateString() : 'non défini'}`,
@@ -881,6 +882,7 @@ export default function VerticalLinearStepper() {
         return [
           `Solution proposée: ${track4?.proposedSolution?.response || 'N/A'}`,
           `Total price: ${oneComplaint.totalPrice} FC`,
+          `Documents soumis : ${Array.isArray(oneComplaint.tracking?.[3]?.document) && oneComplaint.tracking?.[3]?.document.length ? oneComplaint.tracking?.[3]?.document.join(', ') : 'Aucun document soumis'}`,
           `Date traitée : ${oneComplaint.tracking?.[3]?.dueDate ? new Date(oneComplaint.tracking?.[3]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[3]?.startDate ? new Date(oneComplaint.tracking?.[3]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[3]?.endDate ? new Date(oneComplaint.tracking?.[3]?.endDate).toLocaleDateString() : 'non défini'}`,
@@ -901,79 +903,101 @@ export default function VerticalLinearStepper() {
   return (
     <>
       {loadingProvoked && loading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+      <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">Loading...</span>
+      </div>
+      </div>
       ) : (
-        <Box sx={{ maxWidth: 400 }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {traitementData.map((step, index) => {
-              let stepSummary: string | string[] = '';
-              if (index < activeStep && oneComplaint) {
-                stepSummary = getStepSummaryFromComplaint(oneComplaint, step.position);
-              }
-              return (
-                <Step key={step.position}>
-                  <StepLabel>
-                    <Typography variant="h6">{step.name}</Typography>
-                    {/* Show summary for completed steps */}
-                    {typeof stepSummary === 'string' ? (
-                      <Typography variant="body2" color="textSecondary">
-                        {stepSummary}
-                      </Typography>
-                    ) : (
-                      stepSummary.map((summary) => (
-                        <Typography variant="body2" color="textSecondary">
-                          {summary}
-                        </Typography>
-                      ))
-                    )}
-                  </StepLabel>
-                  <StepContent>
-                    {renderFormContent(step, index)}
-                    <Box sx={{ mb: 2 }}>
-                      <Button
-                        variant="contained"
-                        onClick={handleNext}
-                        sx={{ mt: 1, mr: 1 }}
-                        disabled={
-                          (index === 6 && satisfactionRating?.satisfactionRating == null) || complaintMessageStepNine
-                            ? true
-                            : false || oneComplaint?.status === 'Closed' || complaintMessageStepEight
-                              ? true
-                              : false
-                        }
-                      >
-                        {index === traitementData.length - 1 ? "Annuler l'envoi de la plainte en justice " : 'Continuer'}
-                      </Button>
-                      {/* disabled={index === 1 || completedSteps.includes(index - 1)} */}
-                      <Button
-                        disabled={
-                          index === 1 || completedSteps.includes(index - 1) || satisfactionRating?.satisfactionRating == null || index === 8
-                        }
-                        onClick={handleBack}
-                        sx={{ mt: 1, mr: 1 }}
-                      >
-                        Retour
-                      </Button>
-                    </Box>
-                  </StepContent>
-                </Step>
-              );
-            })}
-          </Stepper>
-          {activeStep === traitementData.length && (
-            <Paper square elevation={0} sx={{ p: 3 }}>
-              <Typography>Toutes les étapes sont complétées - Vous avez terminé !</Typography>
-              <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                Réinitialiser
-              </Button>
-              <Typography variant="body2">Valeurs du formulaire: {JSON.stringify(formValues, null, 2)}</Typography>
-            </Paper>
-          )}
+      <Box sx={{ maxWidth: 400 }}>
+      <Stepper activeStep={activeStep} orientation="vertical">
+      {traitementData.map((step, index) => {
+        let stepSummary: string | string[] = '';
+        if (index < activeStep && oneComplaint) {
+        stepSummary = getStepSummaryFromComplaint(oneComplaint, step.position);
+        }
+        return (
+        <Step key={step.position}>
+        <StepLabel>
+        <Typography variant="h6">{step.name}</Typography>
+        {/* Show summary for completed steps */}
+        {typeof stepSummary === 'string' ? (
+          <Typography variant="body2" color="textSecondary">
+          {stepSummary}
+          </Typography>
+        ) : (
+          stepSummary.map((summary, idx) => (
+          <Typography key={idx} variant="body2" color="textSecondary">
+          {summary}
+          </Typography>
+          ))
+        )}
+        <Typography variant="body2" color="textSecondary">
+          {`Date traitée : ${oneComplaint?.tracking?.[index]?.dueDate ? new Date(oneComplaint.tracking[index].dueDate).toLocaleDateString() : 'non défini'}`}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {`Date de début : ${oneComplaint?.tracking?.[index]?.startDate ? new Date(oneComplaint.tracking[index].startDate).toLocaleDateString() : 'non défini'}`}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {`Date de fin : ${oneComplaint?.tracking?.[index]?.endDate ? new Date(oneComplaint.tracking[index].endDate).toLocaleDateString() : 'non défini'}`}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {oneComplaint?.tracking?.[index]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking[index].step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini'}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {oneComplaint?.tracking?.[index]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking[index].step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini'}
+        </Typography>
+        {
+        /* 
+
+        <Typography variant="body2" color="textSecondary">
+          {oneComplaint.tracking?.[index]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[index]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'}
+        </Typography> 
+
+        */
+        }
+        </StepLabel>
+        <StepContent>
+        {renderFormContent(step, index)}
+        <Box sx={{ mb: 2 }}>
+          <Button
+          variant="contained"
+          onClick={handleNext}
+          sx={{ mt: 1, mr: 1 }}
+          disabled={
+          !!((index === 6 && satisfactionRating?.satisfactionRating == null) || complaintMessageStepNine ||
+          oneComplaint?.status === 'Closed' || complaintMessageStepEight)
+          }
+          >
+          {index === traitementData.length - 1 ? "Annuler l'envoi de la plainte en justice " : 'Continuer'}
+          </Button>
+          <Button
+          disabled={
+          index === 0 || completedSteps.includes(index - 1) || 
+          (index === 6 && satisfactionRating?.satisfactionRating == null) || 
+          index === 8
+          }
+          onClick={handleBack}
+          sx={{ mt: 1, mr: 1 }}
+          >
+          Retour
+          </Button>
         </Box>
+        </StepContent>
+        </Step>
+        );
+      })}
+      </Stepper>
+      {activeStep === traitementData.length && (
+      <Paper square elevation={0} sx={{ p: 3 }}>
+        <Typography>Toutes les étapes sont complétées - Vous avez terminé !</Typography>
+        <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+        Réinitialiser
+        </Button>
+        <Typography variant="body2">Valeurs du formulaire: {JSON.stringify(formValues, null, 2)}</Typography>
+      </Paper>
+      )}
+      </Box>
       )}
       <CustomToast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>

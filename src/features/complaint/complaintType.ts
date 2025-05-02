@@ -212,6 +212,7 @@ type Tracking = {
   step: TrackingStep;
   proposedSolution: proposedSolution;
   satisfactionRating: SatisfactionRating;
+  document?:string
 };
 type CurrentStep = {
   name: string;
