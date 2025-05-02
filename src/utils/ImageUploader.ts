@@ -10,7 +10,7 @@ export const uploadImageToCloudinary = async (file: File) => {
 
   try {
     const response = await fetch(
-        `https://api.cloudinary.com/v1_1/dq73m9ljl/${resourceType}/upload`,
+        `http://192.168.200.223:8181/api/v1/uploads/tracking`,
       {
         method: 'POST',
         body: formData,
