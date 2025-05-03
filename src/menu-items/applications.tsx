@@ -108,6 +108,16 @@ const applications: NavItemType = {
       role: ['Administrator']
     },
     {
+      id: 'vulnerabilite',
+      title: <FormattedMessage id="Vulnérabilités" />,
+      type: 'item',
+      icon: icons.kanban,
+      url: '/gestion/vulnerabilite',
+      link: '/gestion/vulnerabilite',
+      breadcrumbs: false,
+      role: ['Administrator']
+    },
+    {
       id: 'units',
       title: <FormattedMessage id="Unité de mesure" />,
       type: 'item',

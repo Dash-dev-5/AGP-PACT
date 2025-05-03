@@ -10,7 +10,7 @@ import ProtectedRoute from './protectedRoute';
 import ShowPap from 'pages/apps/pap/ShowPap';
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
+const DashboardDefault = Loadable(lazy(() => import('pages/dashboard'))); 
 
 // render - widget
 const Utilisateur = Loadable(lazy(() => import('pages/widget/utilisateur')));
@@ -26,7 +26,11 @@ const PlaintePage = Loadable(lazy(() => import('pages/apps/plainte-page')));
 
 const PlainteTypePage = Loadable(lazy(() => import('pages/apps/plainte-type-page')));
 const Prejudice = Loadable(lazy(() => import('pages/apps/prejudice/index')));
+
 const Species = Loadable(lazy(() => import('pages/apps/species/index')));
+
+const Vulnerabilite = Loadable(lazy(() => import('pages/apps/Vulnerabilite/index')));
+
 const Units = Loadable(lazy(() => import('pages/apps/units')));
 const ProjectSite = Loadable(lazy(() => import('pages/apps/projectSite')));
 
@@ -73,7 +77,7 @@ const MainRoutes = {
 
         {
           path: 'user',
-          element: <ProtectedRoute allowedRoles={['Administrator']} />,
+          element: <ProtectedRoute allowedRoles={['Administrator']} />, 
           children: [
             //user
             {
@@ -203,6 +207,13 @@ const MainRoutes = {
                 { index: true, element: <Species /> },
                 { path: ':priceId', element: <SpeciesPrice /> }
               ]
+            },
+            {
+              path: 'vulnerabilite',
+              element:
+              <ProtectedRoute allowedRoles={['Administrator']}>
+                  <Vulnerabilite />
+              </ProtectedRoute>
             },
             //Unit
             {
