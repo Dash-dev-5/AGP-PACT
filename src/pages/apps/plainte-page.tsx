@@ -110,7 +110,7 @@ const PlaintePage = () => {
                 formData.append('file', file);
 
                 try {
-                  const response = await fetch(`http://localhost:8181/api/v1/uploads/${item.id}`, {
+                  const response = await fetch(`http://192.168.200.223:8181/api/v1/uploads/${item.id}`, {
                   method: 'POST',
                   body: formData,
                   });
@@ -172,9 +172,16 @@ const PlaintePage = () => {
                   )}
                   </td>
                   <td>
-                  <Button variant="info" size="sm" onClick={handleUploadClick}>
-                    Télécharger un fichier
-                  </Button>
+                    
+                  {item.document ? (
+                    <a href={item.document} target="_blank" rel="noopener noreferrer">
+                      Voir le fichier
+                    </a>
+                  ) : (
+                    <Button variant="info" size="sm" onClick={handleUploadClick}>
+                      Charger un fichier
+                    </Button>
+                  )}
                   </td>
                 </tr>
                 );
