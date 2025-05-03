@@ -72,7 +72,7 @@ export default function Commitee() {
       console.log("Start Date: ", startDate);
       console.log("End Date: ", endDate);
       const response = await fetch(
-        `http://plaintes.celluleinfra.org:8181/api/v1/committees/repport/${id}?startDate=${startDate}&endDate=${endDate}`
+        `${import.meta.env.VITE_APP_API_URL}committees/repport/${id}?startDate=${startDate}&endDate=${endDate}`
       );
       const data = await response.json();
       console.log("From details ",data);

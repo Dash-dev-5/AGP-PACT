@@ -24,7 +24,7 @@ const DetailComplait = () => {
         console.log('Token:', token);
 
 
-        const response = await fetch(`http://plaintes.celluleinfra.org:8181/api/v1//complaints/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_URL}complaints/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`, // Add token to Authorization header
           },

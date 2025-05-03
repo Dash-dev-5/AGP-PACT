@@ -115,8 +115,8 @@ export default function Province() {
                       const toastId = toast.loading('Veuillez patienter...');
                       try {
                         const url = province.isProjectConcern
-                        ? `http://plaintes.celluleinfra.org:8181/api/v1/provinces/remove-to-project?provinces=${province.id}`
-                        : `http://plaintes.celluleinfra.org:8181/api/v1/provinces/add-to-project?provinces=${province.id}`;
+                        ? `${import.meta.env.VITE_APP_API_URL}provinces/remove-to-project?provinces=${province.id}`
+                        : `${import.meta.env.VITE_APP_API_URL}provinces/add-to-project?provinces=${province.id}`;
                         const response = await fetch(url, {
                         method: 'POST',
                         headers: {
