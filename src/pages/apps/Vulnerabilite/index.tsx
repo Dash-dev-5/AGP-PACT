@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { toast } from 'react-toastify';
 import { createSpeciesAsync, fetchSpeciesAsync } from 'features/species/speciesSlice';
-import { CreateSpeciesSchema } from 'features/species/SpeciesTypes';
+import { CreateVulnerabiliteSchema } from 'features/species/SpeciesTypes';
 import { fetchUnitsAsync } from 'features/units/unitsSlice';
 import { fetchAssetTypesAsync } from 'features/asset-type/assetTypeSlice';
 import UpdateSpecies from './UpdateVulnerabilite';
@@ -33,8 +33,8 @@ export default function Vulnerabilite() {
 
   const [vulnerabilites, setVulnerabilites] = useState<Vulnerabilite[]>([]);
   const { user } = useAuth();
-  const createSpeciesForm = useForm<z.infer<typeof CreateSpeciesSchema>>({
-    resolver: zodResolver(CreateSpeciesSchema)
+  const createVulnerabiliteForm = useForm<z.infer<typeof CreateVulnerabiliteSchema>>({
+    resolver: zodResolver(CreateVulnerabiliteSchema)
   });
 
   React.useEffect(() => {
@@ -45,12 +45,12 @@ export default function Vulnerabilite() {
 
   const handleClose = () => {
     setShow(false);
-    createSpeciesForm.reset();
+    createVulnerabiliteForm.reset();
   };
   const handleShow = () => setShow(true);
 
   // Pagination logic
-  const totalPages = Math.ceil(speciesList.length / itemsPerPage);
+  const totalPages = Math.ceil(vulnerabilites.length / itemsPerPage);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -58,13 +58,65 @@ export default function Vulnerabilite() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   //const vulnerabilites = speciesList.slice(startIndex, endIndex);
-
+  // delete Vulnerabilite
+  const handleDeleteVulnerabilite = async (id: string, reason: string) => {
+    try {
+      const token = user?.token;
+      const response = await fetch(`${import.meta.env.VITE_APP_API_URL}vulnerability-level/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
+        body: JSON.stringify({ reason }), // Include reason in the request body
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete vulnerability');
+      }
+      setVulnerabilites((prev) => prev.filter((vulnerabilite) => vulnerabilite.id !== id));
+      toast.success('Vulnérabilité supprimée avec succès !', {
+        autoClose: 2000
+      });
+    } catch (error) {
+      toast.error('Erreur lors de la suppression de la vulnérabilité', {
+        autoClose: 4000
+      });
+    }
+  };
+  // Ajout Vulnerabilites
+  const handleAddVulnerabilite = async (data: z.infer<typeof CreateVulnerabiliteSchema>) => {
+    try {
+      const token = user?.token;
+      const response = await fetch(`${import.meta.env.VITE_APP_API_URL}vulnerability-level`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add vulnerability');
+      }
+      const newVulnerabilite = await response.json();
+      setVulnerabilites((prev) => [...prev, newVulnerabilite]);
+      toast.success('Vulnérabilité ajoutée avec succès !', {
+        autoClose: 2000
+      });
+      handleClose();
+    } catch (error) {
+      toast.error('Erreur lors de l\'ajout de la vulnérabilité', {
+        autoClose: 4000
+      });
+    }
+  };
   // fetch Vulnerabilites
   React.useEffect(() => {
     const fetchVulnerabilities = async () => {
       try {
         const token = user?.token;
-        const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/vulnerability-level`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_URL}vulnerability-level`, {
           headers: {
             Authorization: `Bearer ${token}`, // Add token to Authorization header
           },
@@ -74,28 +126,14 @@ export default function Vulnerabilite() {
         }
         const data = await response.json();
         setVulnerabilites(data);
-        console.log('###### vulnerqbilite', data); // Handle the fetched data as needed
+         
       } catch (error) {
         console.error('Error fetching vulnerabilities:', error);
       }
     };
-
     fetchVulnerabilities();
   }, []);
-
-  const onCreateSpecies = async (data: z.infer<typeof CreateSpeciesSchema>) => {
-    try {
-      await dispatch(createSpeciesAsync(data)).unwrap();
-      toast.success('Espèce ajoutée avec succès !', {
-        autoClose: 2000
-      });
-      handleClose();
-    } catch (error) {
-      toast.error(String(error), {
-        autoClose: 4000
-      });
-    }
-  };
+ 
 
   return (
     <>
@@ -103,7 +141,7 @@ export default function Vulnerabilite() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h3 className="fw-bold">Liste des Vulnérabilités </h3>
           <Button variant="primary" onClick={handleShow} className="shadow-sm">
-            Ajouter une espèce
+            Ajouter une Vulnerabilite
           </Button>
         </div>
         <div>
@@ -148,7 +186,15 @@ export default function Vulnerabilite() {
                         </Link>
 
                         {/* <UpdateSpecies species={vulnerabilte} /> */}
-                        <DeleteSpecies id={vulnerabilte.id} name={vulnerabilte.name} />
+                         
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteVulnerabilite(vulnerabilte.id,'Données créées par erreur')}
+                          className="shadow-sm"
+                        >
+                          Supprimer
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -177,55 +223,22 @@ export default function Vulnerabilite() {
       {show && (
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Créer une Espèce {createStatus === 'loading' && <Spinner size="sm" className="ms-2" />}</Modal.Title>
+            <Modal.Title>Créer une Vulnerabilite {createStatus === 'loading' && <Spinner size="sm" className="ms-2" />}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form onSubmit={createSpeciesForm.handleSubmit(onCreateSpecies)}>
+            <form onSubmit={createVulnerabiliteForm.handleSubmit(handleAddVulnerabilite)}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-bold">Nom</Form.Label>
                 <Form.Control
                   id="name"
-                  className={`form-control shadow-sm ${createSpeciesForm.formState.errors.name ? 'is-invalid' : ''}`}
-                  {...createSpeciesForm.register('name')}
+                  className={`form-control shadow-sm ${createVulnerabiliteForm.formState.errors.name ? 'is-invalid' : ''}`}
+                  {...createVulnerabiliteForm.register('name')}
                 />
-                {createSpeciesForm.formState.errors.name && (
-                  <div className="invalid-feedback">{createSpeciesForm.formState.errors.name.message}</div>
+                {createVulnerabiliteForm.formState.errors.name && (
+                  <div className="invalid-feedback">{createVulnerabiliteForm.formState.errors.name.message}</div>
                 )}
               </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="fw-bold">Type d'actif</Form.Label>
-                <Form.Select
-                  className={`shadow-sm ${createSpeciesForm.formState.errors.type ? 'is-invalid' : ''}`}
-                  {...createSpeciesForm.register('type')}
-                >
-                  <option value="">Sélectionnez un type d'actif</option>
-                  {assetTypes.map((type, index) => (
-                    <option key={index} value={type.id}>
-                      {type.name}
-                    </option>
-                  ))}
-                </Form.Select>
-                {createSpeciesForm.formState.errors.type && (
-                  <div className="invalid-feedback">{createSpeciesForm.formState.errors.type.message}</div>
-                )}
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="fw-bold">Unité de mesure</Form.Label>
-                <Form.Select
-                  className={`shadow-sm ${createSpeciesForm.formState.errors.unit ? 'is-invalid' : ''}`}
-                  {...createSpeciesForm.register('unit')}
-                >
-                  <option value="">Sélectionnez une unité de mesure</option>
-                  {units.map((unit, index) => (
-                    <option key={index} value={unit.id}>
-                      {unit.name}
-                    </option>
-                  ))}
-                </Form.Select>
-                {createSpeciesForm.formState.errors.unit && (
-                  <div className="invalid-feedback">{createSpeciesForm.formState.errors.unit.message}</div>
-                )}
-              </Form.Group>
+            
               <Button variant="primary" type="submit" className="w-100 shadow-sm">
                 Enregistrer
               </Button>

@@ -35,6 +35,11 @@ export const CreateSpeciesSchema = z.object({
   unit: z.string().uuid("L'unité de mesure est requise")
 });
 
+export const CreateVulnerabiliteSchema = z.object({
+  name: z.string().min(1, 'Le nom est requis'),
+  
+});
+
 export const updateSpeciesSchema = z.object({
   id: z.string().uuid(),
   data: CreateSpeciesSchema.extend({
