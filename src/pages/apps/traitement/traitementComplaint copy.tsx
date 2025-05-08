@@ -84,7 +84,8 @@ export default function TreatmentComplaint() {
         continue;
       }
 
-      const url = await uploadImageToCloudinary(file);
+      // const url = await uploadImageToCloudinary(file);
+      const url = '';
       if (url) {
         uploadedUrls.push(url);
       }

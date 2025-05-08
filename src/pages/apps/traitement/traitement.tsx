@@ -933,19 +933,19 @@ export default function VerticalLinearStepper() {
           ))
         )}
         <Typography variant="body2" color="textSecondary">
-          {`Date traitée : ${oneComplaint?.tracking?.[index]?.dueDate ? new Date(oneComplaint.tracking[index].dueDate).toLocaleDateString() : 'non défini'}`}
+          {`Date traitée : ${oneComplaint?.tracking?.[index]?.dueDate ? new Date(oneComplaint?.tracking[index]?.dueDate as string).toLocaleDateString() : 'non défini'}`}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {`Date de début : ${oneComplaint?.tracking?.[index]?.startDate ? new Date(oneComplaint.tracking[index].startDate).toLocaleDateString() : 'non défini'}`}
+          {`Date de début : ${oneComplaint?.tracking?.[index]?.startDate ? new Date(oneComplaint?.tracking[index]?.startDate as string).toLocaleDateString() : 'non défini'}`}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {`Date de fin : ${oneComplaint?.tracking?.[index]?.endDate ? new Date(oneComplaint.tracking[index].endDate).toLocaleDateString() : 'non défini'}`}
+          {`Date de fin : ${oneComplaint?.tracking?.[index]?.endDate ? new Date(oneComplaint?.tracking[index]?.endDate as string).toLocaleDateString() : 'non défini'}`}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {oneComplaint?.tracking?.[index]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking[index].step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini'}
+          {oneComplaint?.tracking?.[index]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint?.tracking[index]?.step?.deadlineForNormalComplaint} jours` : 'Délai normal : non défini'}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {oneComplaint?.tracking?.[index]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking[index].step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini'}
+          {oneComplaint?.tracking?.[index]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint?.tracking[index]?.step?.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini'}
         </Typography>
         {
         /* 

@@ -12,37 +12,17 @@ import TreatmentComplaint from '../traitement/traitementComplaint';
 const DetailComplait = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  console.log('id from parm complaint', id);
   const { user } = useAuth();
   const { oneComplaint } = useAppSelector((state) => state.complaint);
-  console.log('oneComplaint tes', oneComplaint);
+
+  console.log('Complaint ID from params:', id);
+  console.log('User token:', user?.token);
+  console.log('Fetched complaint:', oneComplaint);
 
   useEffect(() => {
-    const fetchComplaint = async () => {
-      try {
-        const token = user?.token; // Retrieve token from localStorage
-        console.log('Token:', token);
-
-
-        const response = await fetch(`http://192.168.200.223:8181/api/v1/complaints/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add token to Authorization header
-          },
-        });
-        const data = await response.json();
-        console.log('Fetched complaint data:', data);
-        dispatch(fetchComplaintById(data));
-      } catch (error) {
-        console.error('Error fetching complaint:', error);
-      }
-    };
-
     if (id) {
-      fetchComplaint();
+      dispatch(fetchComplaintById(id));
     }
-  }, [id, dispatch]);
-  useEffect(() => {
-    if (id) dispatch(fetchComplaintById(id));
   }, [dispatch, id]);
 
   return (
