@@ -39,8 +39,8 @@ const Statistics = () => {
   const fetchData = async () => {
 
     const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
-    const effectiveStartDate = startDate || currentDate;
-    const effectiveEndDate = endDate || currentDate;
+    const effectiveStartDate = startDate ? new Date(startDate).toISOString().split('T')[0] : currentDate;
+    const effectiveEndDate = endDate ? new Date(endDate).toISOString().split('T')[0] : currentDate;
 
     let url = `${import.meta.env.VITE_APP_API_URL}complaints/statistic`;
     if (selectedTroncon) {

@@ -653,24 +653,24 @@ export default function VerticalLinearStepper() {
               <Typography variant="h6" className="mb-3">
                 Télécharger un document
               </Typography>
-              <Input
-                type="file"
-                inputProps={{
-                  accept: '.docx,.pdf,.jpeg,.jpg,.png,.svg',
-                  multiple: true
-                }}
-                // onChange={(e) => onChange(e.target.files ? e.target.files[0] : null)}
-                sx={{ display: 'none' }} // Cacher l'input
-                id="file-upload"
-              />
-              <label htmlFor="file-upload">
-                <Button variant="contained" component="span">
-                  Choisir un fichier
+              <input type="file" accept=".pdf,.doc,.docx" multiple onChange={handleFileChange} />
+                <Button onClick={handleUpload} variant="contained" sx={{ mt: 2 }}>
+                  Télécharger le(s) fichier(s)
                 </Button>
-              </label>
-              {/* <Button variant="contained" onClick={() => document.getElementById('file-upload')?.click()} sx={{ ml: 2 }} className="mb-1">
-                Télécharger
-              </Button> */}
+                {uploadedFiles.length > 0 && (
+                  <div>
+                    <p>Fichiers téléchargés :</p>
+                    <ul>
+                      {uploadedFiles.map((fileUrl, index) => (
+                        <li key={index}>
+                          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                            Voir le fichier {index + 1}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
             </Box>
           </>
         );
@@ -848,34 +848,34 @@ export default function VerticalLinearStepper() {
       case 1:
         return [
           `Plainte enregistrée : ${oneComplaint.code}`,
-          `Date traitée : ${oneComplaint.tracking?.[0]?.dueDate ? new Date(oneComplaint.tracking?.[0]?.dueDate).toLocaleDateString() : 'non défini'}`,
+         /* `Date traitée : ${oneComplaint.tracking?.[0]?.dueDate ? new Date(oneComplaint.tracking?.[0]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[0]?.startDate ? new Date(oneComplaint.tracking?.[0]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[0]?.endDate ? new Date(oneComplaint.tracking?.[0]?.endDate).toLocaleDateString() : 'non défini'}`,
           oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[0]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
           oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[0]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
-          oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+          oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[0]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'*/
         ];
             case 2:
         return [
           `Type: ${oneComplaint.prejudice?.typeName || 'non défini'}`,
           `Préjudice: ${oneComplaint.prejudice?.name || 'non défini'}`,
-          `Date traitée : ${oneComplaint.tracking?.[1]?.dueDate ? new Date(oneComplaint.tracking?.[1]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          /*`Date traitée : ${oneComplaint.tracking?.[1]?.dueDate ? new Date(oneComplaint.tracking?.[1]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[1]?.startDate ? new Date(oneComplaint.tracking?.[1]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[1]?.endDate ? new Date(oneComplaint.tracking?.[1]?.endDate).toLocaleDateString() : 'non défini'}`,
           oneComplaint.tracking?.[1]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[1]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
           oneComplaint.tracking?.[1]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[1]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
-          oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+          oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[1]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'*/
         ];
             case 3:
         return [
           oneComplaint.isEligible ? 'Plainte éligible' : 'Plainte non éligible',
           `Documents soumis : ${Array.isArray(oneComplaint.tracking?.[2]?.document) && oneComplaint.tracking?.[2]?.document.length ? oneComplaint.tracking?.[2]?.document.join(', ') : 'Aucun document soumis'}`,
-          `Date traitée : ${oneComplaint.tracking?.[2]?.dueDate ? new Date(oneComplaint.tracking?.[2]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          /*`Date traitée : ${oneComplaint.tracking?.[2]?.dueDate ? new Date(oneComplaint.tracking?.[2]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[2]?.startDate ? new Date(oneComplaint.tracking?.[2]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[2]?.endDate ? new Date(oneComplaint.tracking?.[2]?.endDate).toLocaleDateString() : 'non défini'}`,
           oneComplaint.tracking?.[2]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[2]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
           oneComplaint.tracking?.[2]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[2]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
-          oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+          oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[2]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'*/
         ];
       case 4: {
         const track4 = oneComplaint.tracking?.find((t) => t.position === 4);
@@ -883,12 +883,12 @@ export default function VerticalLinearStepper() {
           `Solution proposée: ${track4?.proposedSolution?.response || 'N/A'}`,
           `Total price: ${oneComplaint.totalPrice} FC`,
           `Documents soumis : ${Array.isArray(oneComplaint.tracking?.[3]?.document) && oneComplaint.tracking?.[3]?.document.length ? oneComplaint.tracking?.[3]?.document.join(', ') : 'Aucun document soumis'}`,
-          `Date traitée : ${oneComplaint.tracking?.[3]?.dueDate ? new Date(oneComplaint.tracking?.[3]?.dueDate).toLocaleDateString() : 'non défini'}`,
+          /*`Date traitée : ${oneComplaint.tracking?.[3]?.dueDate ? new Date(oneComplaint.tracking?.[3]?.dueDate).toLocaleDateString() : 'non défini'}`,
           `Date de début : ${oneComplaint.tracking?.[3]?.startDate ? new Date(oneComplaint.tracking?.[3]?.startDate).toLocaleDateString() : 'non défini'}`,
           `Date de fin : ${oneComplaint.tracking?.[3]?.endDate ? new Date(oneComplaint.tracking?.[3]?.endDate).toLocaleDateString() : 'non défini'}`,
           oneComplaint.tracking?.[3]?.step.deadlineForNormalComplaint ? `Délai normal : ${oneComplaint.tracking?.[3]?.step.deadlineForNormalComplaint} jours` : 'Délai normal : non défini',
           oneComplaint.tracking?.[3]?.step.deadlineForUrgentComplaint ? `Délai urgent : ${oneComplaint.tracking?.[3]?.step.deadlineForUrgentComplaint} jours` : 'Délai urgent : non défini',
-          oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'
+          oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint ? `Délai prioritaire : ${oneComplaint.tracking?.[3]?.step.deadlineForPriorityComplaint} jours` : 'Délai prioritaire : non défini'*/
         ];
       }
       // Add summaries for other steps
@@ -932,6 +932,7 @@ export default function VerticalLinearStepper() {
           </Typography>
           ))
         )}
+ 
         <Typography variant="body2" color="textSecondary">
           {`Date traitée : ${oneComplaint?.tracking?.[index]?.dueDate ? new Date(oneComplaint?.tracking[index]?.dueDate as string).toLocaleDateString() : 'non défini'}`}
         </Typography>

@@ -110,7 +110,7 @@ const PlaintePage = () => {
                 formData.append('file', file);
 
                 try {
-                  const response = await fetch(`http://192.168.200.223:8181/api/v1/uploads/${item.id}`, {
+                  const response = await fetch(`${import.meta.env.VITE_APP_API_URL}uploads/${item.id}`, {
                   method: 'POST',
                   body: formData,
                   });

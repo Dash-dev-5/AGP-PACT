@@ -6,7 +6,7 @@ export const uploadImageToCloudinary = async (file: File, token: string) => {
 
   try {
     const response = await fetch(
-        `http://plaintes.celluleinfra.org:8181/api/v1/uploads/traking/upload`,
+        `${import.meta.env.VITE_APP_API_URL}uploads/traking/upload`,
       {
         method: 'POST',
         body: formData,
