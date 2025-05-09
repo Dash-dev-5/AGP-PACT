@@ -29,6 +29,13 @@ const locationsMenu: NavItemType = {
       breadcrumbs: false
     },
     {
+      id: 'Territoire',
+      title: <FormattedMessage id="Territoire" />,
+      type: 'item',
+      url: '/location/territoire',
+      breadcrumbs: false
+    },
+    {
       id: 'ville',
       title: <FormattedMessage id="ville" />,
       type: 'item',

@@ -40,6 +40,7 @@ const SpeciesPrice = Loadable(lazy(() => import('pages/apps/species-price')));
 const ChooseComplaintType = Loadable(lazy(() => import('pages/apps/chooseComplaintType')));
 const AnonymousComplaint = Loadable(lazy(() => import('sections/landing/anonymous-complaint')));
 const Province = Loadable(lazy(() => import('pages/apps/location/province')));
+const Territoire = Loadable(lazy(() => import('pages/apps/location/territoire')));
 const Ville = Loadable(lazy(() => import('pages/apps/location/ville')));
 const GestionPap = Loadable(lazy(() => import('pages/apps/pap')));
 const AddPap = Loadable(lazy(() => import('pages/apps/pap/AddPap')));
@@ -242,6 +243,10 @@ const MainRoutes = {
             {
               path: 'province',
               element: <Province />
+            },
+            {
+              path: 'territoire',
+              element: <Territoire />
             },
             {
               path: 'ville',

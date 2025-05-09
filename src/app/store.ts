@@ -25,6 +25,7 @@ import dataManagementReducer from 'features/dataManagement/rootDataManagement';
 import unitsReducer from 'features/units/unitsSlice';
 import assetTypeReducer from 'features/asset-type/assetTypeSlice';
 import papReducer from 'features/pap/papSlice';
+import territorySlice from 'features/territoire/territorySlice';
 
 const store = configureStore({ 
   reducer: {
@@ -54,7 +55,8 @@ const store = configureStore({
     units: unitsReducer,
     assetType: assetTypeReducer,
     dataManagement: dataManagementReducer,
-    pap: papReducer
+    pap: papReducer,
+    territory: territorySlice,
   }
 });
 

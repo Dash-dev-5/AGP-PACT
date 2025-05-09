@@ -4,17 +4,18 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { RegerationFormType } from 'features/dataManagement/registrationSteps/registrationStepsType';
 import { fetchProvinces } from 'features/province/provinceSlice';
 import { ICity, ISector, IVillage } from 'features/province/provinceType';
+import { fetchTerritories } from 'features/territoire/territorySlice';
 import { useEffect, useState } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row, FormCheck } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const FormData = z.object({
   province: z.string().min(1, { message: 'La province est requise' }),
-  city: z.string().min(1, { message: 'La ville est requise' }),
+  city: z.string().min(1, { message: 'La ville ou territoire est requis' }),
   sector: z.string().min(1, { message: 'Le secteur est requis' }),
   village: z.string().optional(),
-  addressLine1: z.string().min(1, { message: 'Addresse est requis' })
+  addressLine1: z.string().min(1, { message: 'Adresse est requise' })
 });
 
 interface Form4RegerationProps {
@@ -23,8 +24,18 @@ interface Form4RegerationProps {
   saveStepData: ActionCreatorWithPayload<Partial<RegerationFormType>>;
 }
 
+// Données statiques
+const staticCitiesByProvince: Record<string, ICity[]> = {
+  '1': [{ id: '11', name: 'Ville A1' }, { id: '12', name: 'Ville A2' }],
+  '2': [{ id: '21', name: 'Ville B1' }, { id: '22', name: 'Ville B2' }]
+};
+
+
+
 const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, saveStepData }) => {
   const { provinces } = useAppSelector((state) => state.province);
+  const { territories } = useAppSelector((state) => state.territory);
+
   const dispatch = useAppDispatch();
 
   const {
@@ -47,37 +58,54 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
   const [cities, setCities] = useState<ICity[]>([]);
   const [sectors, setSectors] = useState<ISector[]>([]);
   const [villages, setVillages] = useState<IVillage[]>([]);
-
+  const [typeSelection, setTypeSelection] = useState<'city' | 'territory' | ''>('');
+ const [idProvince, setIdProvince] = useState("");
   useEffect(() => {
     dispatch(fetchProvinces());
   }, [dispatch]);
 
   const provinceId = watch('province');
+  const cityId = watch('city');
+  const sectorId = watch('sector');
+
+  // Met à jour villes ou territoires
   useEffect(() => {
     setValue('city', '');
-    setValue('sector', '');
-    setValue('village', '');
-    if (provinceId) {
-      const province = provinces.find((prov) => prov.id === provinceId);
-      setCities(province?.cities || []);
-    }
-  }, [provinceId, provinces, setValue]);
+    setCities([]);
+    setTypeSelection('');
+    setSectors([]);
+    setVillages([]);
+  }, [provinceId, setValue]);
 
-  const cityId = watch('city');
+ useEffect(() => {
+  if (provinceId && typeSelection === 'territory') {
+    dispatch(fetchTerritories({ id: provinceId }));
+  } else if (provinceId && typeSelection === 'city') {
+    setCities(staticCitiesByProvince[provinceId] || []);
+  }
+}, [provinceId, typeSelection, dispatch]);
+
+useEffect(() => {
+  if (typeSelection === 'territory') {
+    setCities(territories);
+    console.log('da :',territories);
+    
+  }
+}, [territories, typeSelection]);
+
   useEffect(() => {
     setValue('sector', '');
     setValue('village', '');
     if (cityId) {
-      const city = cities.find((cty) => cty.id === cityId);
+      const city = cities.find((c) => c.id === cityId);
       setSectors(city?.sectors || []);
     }
   }, [cityId, cities, setValue]);
 
-  const sectorId = watch('sector');
   useEffect(() => {
     setValue('village', '');
     if (sectorId) {
-      const sector = sectors.find((sct) => sct.id === sectorId);
+      const sector = sectors.find((s) => s.id === sectorId);
       setVillages(sector?.villages || []);
     }
   }, [sectorId, sectors, setValue]);
@@ -101,7 +129,7 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
                   <Form.Label>
                     Province <span className="text-danger">*</span>
                   </Form.Label>
-                  <Form.Select {...register('province')} isInvalid={!!errors.province}>
+                  <Form.Select {...register('province')}  isInvalid={!!errors.province}>
                     <option value="">Sélectionner la province</option>
                     {provinces.map((province) => (
                       <option key={province.id} value={province.id}>
@@ -113,22 +141,50 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
                 </Form.Group>
               </Col>
 
-              <Col md={6} className="mb-3">
-                <Form.Group>
-                  <Form.Label>
-                    Ville/Territoire <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Select {...register('city')} disabled={!provinceId} isInvalid={!!errors.city}>
-                    <option value="">Sélectionner la ville</option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.city?.message}</Form.Control.Feedback>
-                </Form.Group>
-              </Col>
+              {provinceId && (
+                <Col md={6} className="mb-3">
+                  <Form.Group>
+                    <Form.Label>Choisissez le type</Form.Label>
+                    <div>
+                      <FormCheck
+                        inline
+                        label="Ville"
+                        type="radio"
+                        id="city-option"
+                        checked={typeSelection === 'city'}
+                        onChange={() => setTypeSelection('city')}
+                      />
+                      <FormCheck
+                        inline
+                        label="Territoire"
+                        type="radio"
+                        id="territory-option"
+                        checked={typeSelection === 'territory'}
+                        onChange={() => setTypeSelection('territory')}
+                      />
+                    </div>
+                  </Form.Group>
+                </Col>
+              )}
+
+              {typeSelection && (
+                <Col md={6} className="mb-3">
+                  <Form.Group>
+                    <Form.Label>
+                      {typeSelection === 'city' ? 'Ville' : 'Territoire'} <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Select {...register('city')} isInvalid={!!errors.city}>
+                      <option value="">Sélectionner</option>
+                      {cities.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">{errors.city?.message}</Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              )}
 
               <Col md={6} className="mb-3">
                 <Form.Group>
