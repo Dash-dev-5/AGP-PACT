@@ -17,7 +17,7 @@ import RepeatCustomerRateSens from 'sections/widget/chart/RepeatCustomerRateTota
 
 
 import RepeatCustomerRateDansDelais from 'sections/widget/chart/RepeatCustomerRateTotaleSensDansDelais';
-import RepeatCustomerRateHordDelais from 'sections/widget/chart/RepeatCustomerRateTotaleSensHorsDelais ';
+import RepeatCustomerRateHorsDelais from 'sections/widget/chart/RepeatCustomerRateTotaleSensHorsDelais';
 // assets
 import { ArrowDown, ArrowUp, Book, Calendar, CloudChange, Wallet3 } from 'iconsax-react';
 import WelcomeBanner from 'sections/dashboard/default/WelcomeBanner';
@@ -47,6 +47,8 @@ export default function DashboardDefault() {
       const response = await fetch(url);
       const result = await response.json();
       setData(result);
+      console.log('données :', result);
+      
       console.log('Effective Start Date:', effectiveStartDate);
     } catch (error) {
       console.error('Erreur lors de la récupération des données :', error);
@@ -56,8 +58,16 @@ export default function DashboardDefault() {
     fetchData();
   }, []);
 
-  const generalComplaints = data.find((item) => item.category === 'General');
-  const sensitiveComplaints = data.find((item) => item.category === 'Sensible');
+  // const generalComplaints = data.find((item) => item.category === 'General');
+  // const sensitiveComplaints = data.find((item) => item.category === 'Sensible');
+
+  const generalComplaints = Array.isArray(data) ? data.find(item => item.category === 'General') : null;
+const sensitiveComplaints = Array.isArray(data) ? data.find(item => item.category === 'Sensible') : null;
+
+console.log('Data Dash Board : ', generalComplaints);
+console.log('Data Dash Board 2 : ', sensitiveComplaints);
+
+
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -225,7 +235,8 @@ export default function DashboardDefault() {
         <Grid item xs={12} md={12} lg={12}>
         <Grid container spacing={3}>
           <Grid item xs={12}>  
-            <RepeatCustomerRateHordDelais />
+            <RepeatCustomerRateHorsDelais />
+          
           </Grid>
           {/* <Grid item xs={12}>
             <ProjectOverview />
