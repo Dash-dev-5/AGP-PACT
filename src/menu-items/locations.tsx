@@ -41,7 +41,22 @@ const locationsMenu: NavItemType = {
       type: 'item',
       url: '/location/ville',
       breadcrumbs: false
-    }
+    },
+    {
+      id: 'Commune',
+      title: <FormattedMessage id="Commune" />,
+      type: 'item',
+      url: '/location/Commune',
+      breadcrumbs: false
+    },
+    {
+      id: 'Villages',
+      title: <FormattedMessage id="Quartier/Villages" />,
+      // title: <FormattedMessage id="Commune" />,
+      type: 'item',
+      url: '/location/Villages',
+      breadcrumbs: false
+    },
   ]
 };
 

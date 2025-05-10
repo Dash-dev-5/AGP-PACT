@@ -3,16 +3,16 @@ import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import { FaRegEdit } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-// import { IVille, UpdateCityType } from 'features/ville/villeType';
-import { UpdateCityType,IVille } from 'features/ville/villeType';
-import { updateCity } from 'features/ville/citySlice';  // Changer updateCity en updateVille
+import { UpdateCityType, ICity } from 'features/ville/villeType';
+import { updateCity } from 'features/ville/citySlice';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateCitySchema } from 'features/ville/cityValidation';  // Assurez-vous que le schéma updateVilleSchema est correct
+import { updateCitySchema } from 'features/ville/cityValidation';
 import { toast } from 'react-toastify';
 
-const UpdateVille = ({ ville }: { ville: IVille }) => {
+const UpdateVille = ({ ville }: { ville: ICity }) => {
   const [show, setShow] = React.useState(false);
   const dispatch = useAppDispatch();
+  const { provinces } = useAppSelector((state) => state.province); // Récupérer les provinces
   const { updateStatus } = useAppSelector((state) => state.Villes);
 
   const {
@@ -21,24 +21,35 @@ const UpdateVille = ({ ville }: { ville: IVille }) => {
     reset,
     formState: { errors }
   } = useForm<UpdateCityType>({
-    resolver: zodResolver(updateCitySchema),  // Utilisation du bon schéma pour la ville
+    resolver: zodResolver(updateCitySchema),  // Utilisation du schéma de validation pour la ville
     defaultValues: {
       id: ville.id,
-      name: ville.name
+      name: ville.name,
+      province: ville.province // Ajouter la province actuelle
     }
   });
 
   const handleClose = () => {
     reset({
       id: ville.id,
-      name: ville.name
+      name: ville.name,
+      province: ville.province // Réinitialiser la province
     });
     setShow(false);
   };
 
   const onSubmit = async (data: UpdateCityType) => {
+    const { id, name, province } = data;
+
+    // Préparer les données à envoyer à l'API
+    const updateData = {
+      name,
+      province
+    };
+
     try {
-      await dispatch(updateCity(data)).unwrap();
+      // Dispatcher l'action pour mettre à jour la ville
+      await dispatch(updateCity({ id, updateData })).unwrap();
       handleClose();
       toast.success('Ville mise à jour avec succès', {
         autoClose: 2000
@@ -72,6 +83,21 @@ const UpdateVille = ({ ville }: { ville: IVille }) => {
                   {...register('name', { required: 'Ce champ est requis' })}
                 />
                 {errors.name && <div className="text-danger">{errors.name.message}</div>}
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="province">Province</label>
+                <Form.Select
+                  id="province"
+                  {...register('province', { required: 'La province est requise' })}
+                >
+                  <option value="">-- Sélectionner une province --</option>
+                  {provinces.map((province) => (
+                    <option key={province.id} value={province.id}>
+                      {province.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                {errors.province && <div className="text-danger">{errors.province.message}</div>}
               </div>
               {updateStatus === 'failed' && <p className="text-danger">Une erreur est survenue !</p>}
             </Modal.Body>

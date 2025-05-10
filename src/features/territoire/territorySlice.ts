@@ -73,7 +73,6 @@ export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }>(
   async ({ id }, { rejectWithValue }) => {
     try {
       console.log(' id ',id);
-      
       const response = await getRequest<unknown>(`territories/province/${id}`)
       console.log('fact :',response);
       
@@ -82,7 +81,7 @@ export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }>(
         console.error("check territories validation", dataValidation.error)
         throw new Error("Les données ne sont pas correctement télécharger")
       }
-      return dataValidation.data
+      return response.data
     } catch (error) {
       return rejectWithValue(parseError(error))
     }
@@ -97,14 +96,14 @@ export const addTerritory = createAsyncThunk<ITerritory, CreateTerritory>(
       const response = await postRequest<ITerritory>("territories", JSON.stringify(newTerritory))
       console.log("Réponse backend:", response);
 
-      response.data.cities = []
+      // response.data.cities = []
       const dataValidation = territorySchema.safeParse(response.data)
       
-      if (!dataValidation.success) {
-        console.error("check territories validation", dataValidation.error)
-        throw new Error("Les données ne sont pas correctement télécharger")
-      }
-      return dataValidation.data
+      // if (!dataValidation.success) {
+      //   console.error("check territories validation", dataValidation.error)
+      //   throw new Error("Les données ne sont pas correctement télécharger")
+      // }
+      return response.data
     } catch (error) {
       console.log("Erreur attrapée :", parseError(error));
 

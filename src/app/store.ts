@@ -27,6 +27,7 @@ import assetTypeReducer from 'features/asset-type/assetTypeSlice';
 import papReducer from 'features/pap/papSlice';
 import territorySlice from 'features/territoire/territorySlice';
 import citySlice from 'features/ville/citySlice';
+import sectorSlice from 'features/sector/communeSlice';
 
 const store = configureStore({ 
   reducer: {
@@ -59,6 +60,8 @@ const store = configureStore({
     pap: papReducer,
     territory: territorySlice,
     Villes: citySlice ,
+    sectors: sectorSlice ,
+    villages: villageSlice ,
   }
 });
 

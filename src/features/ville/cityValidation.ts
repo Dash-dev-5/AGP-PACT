@@ -51,7 +51,7 @@ export const createCitySchema = z.object({
 // Mise à jour de ville
 export const updateCitySchema = z.object({
   id: z.string().uuid({ message: "L'identifiant de la ville est invalide" }),
-  territory: z.string().uuid({ message: "Le territoire est requis" }),
+  province: z.string().uuid({ message: "Le territoire est requis" }),
   name: z.string().min(3, { message: "Le nom doit comporter au moins 3 caractères" })
 });
 

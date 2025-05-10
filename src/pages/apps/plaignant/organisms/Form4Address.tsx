@@ -13,8 +13,9 @@ import { z } from 'zod';
 
 const FormData = z.object({
   province: z.string().min(1, { message: 'La province est requise' }),
-  city: z.string().min(1, { message: 'La ville ou territoire est requis' }),
-  sector: z.string().min(1, { message: 'Le secteur est requis' }),
+  typeZone: z.string().min(1, { message: 'Le type de zone est requis' }),
+  city: z.string().optional(),
+  sector: z.string().optional(),
   village: z.string().optional(),
   addressLine1: z.string().min(1, { message: 'Adresse est requise' }),
   commune: z.string().optional(),
@@ -65,7 +66,7 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
 
   const [sectors, setSectors] = useState<ISector[]>([]);
   const [villages, setVillages] = useState<IVillage[]>([]);
-  const [typeSelection, setTypeSelection] = useState<'city' | 'territory' | ''>('');
+  const [typeSelection, setTypeSelection] = useState<'village' | 'quartier' | ''>('');
 
   const provinceId = watch('province');
   const cityId = watch('city');
@@ -81,15 +82,14 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
     setValue('village', '');
     setSectors([]);
     setVillages([]);
-    if (provinceId && typeSelection === 'territory') {
+    if (provinceId && typeSelection === 'village') {
       dispatch(fetchTerritories({ id: provinceId }));
-    } else if (provinceId && typeSelection === 'city') {
+    } else if (provinceId && typeSelection === 'quartier') {
       dispatch(fetchCitiesByTerritory({ id: provinceId }));
-      // alert(JSON.stringify(cities)); 
     }
   }, [provinceId, typeSelection, dispatch, setValue]);
 
-  const dynamicCities: ICity[] = typeSelection === 'territory' ? territories : cities;
+  const dynamicCities: ICity[] = typeSelection === 'village' ? territories : cities;
 
   useEffect(() => {
     setValue('sector', '');
@@ -134,23 +134,23 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
               {provinceId && (
                 <Col md={6} className="mb-3">
                   <Form.Group>
-                    <Form.Label>Choisissez le type</Form.Label>
+                    <Form.Label>Type de zone</Form.Label>
                     <div>
                       <FormCheck
                         inline
-                        label="Ville"
+                        label="Village"
                         type="radio"
-                        id="city-option"
-                        checked={typeSelection === 'city'}
-                        onChange={() => setTypeSelection('city')}
+                        id="village-option"
+                        checked={typeSelection === 'village'}
+                        onChange={() => setTypeSelection('village')}
                       />
                       <FormCheck
                         inline
-                        label="Territoire"
+                        label="Quartier"
                         type="radio"
-                        id="territory-option"
-                        checked={typeSelection === 'territory'}
-                        onChange={() => setTypeSelection('territory')}
+                        id="quartier-option"
+                        checked={typeSelection === 'quartier'}
+                        onChange={() => setTypeSelection('quartier')}
                       />
                     </div>
                   </Form.Group>
@@ -160,7 +160,7 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
               {typeSelection && (
                 <Col md={6} className="mb-3">
                   <Form.Group>
-                    <Form.Label>{typeSelection === 'city' ? 'Ville' : 'Territoire'} <span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{typeSelection === 'village' ? 'Territoire' : 'Ville'} <span className="text-danger">*</span></Form.Label>
                     <Form.Select {...register('city')} isInvalid={!!errors.city}>
                       <option value="">Sélectionner</option>
                       {dynamicCities.map((c) => (
@@ -172,97 +172,71 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
                 </Col>
               )}
 
-              {/* <Col md={6} className="mb-3">
-                <Form.Group>
-                  <Form.Label>Secteur <span className="text-danger">*</span></Form.Label>
-                  <Form.Select {...register('sector')} disabled={!cityId} isInvalid={!!errors.sector}>
-                    <option value="">Sélectionner le secteur</option>
-                    {sectors.map((sector) => (
-                      <option key={sector.id} value={sector.id}>{sector.name}</option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.sector?.message}</Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col md={6} className="mb-3">
-                <Form.Group>
-                  <Form.Label>Village</Form.Label>
-                  <Form.Select {...register('village')} disabled={!sectorId} isInvalid={!!errors.village}>
-                    <option value="">Sélectionner le village</option>
-                    {villages.map((v) => (
-                      <option key={v.id} value={v.id}>{v.name}</option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.village?.message}</Form.Control.Feedback>
-                </Form.Group>
-              </Col> */}
-
-              {/* Champs conditionnels supplémentaires */}
-              {typeSelection === 'city' && (
-                <>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Commune</Form.Label>
-                      <Form.Control type="text" {...register('commune')} />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Quartier</Form.Label>
-                      <Form.Control type="text" {...register('quartier')} />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Avenue</Form.Label>
-                      <Form.Control type="text" {...register('avenue')} />
-                    </Form.Group>
-                  </Col>
-                </>
+              {typeSelection === 'village' && (
+                <Col md={6} className="mb-3">
+                  <Form.Group>
+                    <Form.Label>Village</Form.Label>
+                    <Form.Select {...register('village')} disabled={!cityId} isInvalid={!!errors.village}>
+                      <option value="">Sélectionner le village</option>
+                      {villages.map((v) => (
+                        <option key={v.id} value={v.id}>{v.name}</option>
+                      ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">{errors.village?.message}</Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
               )}
 
-              {typeSelection === 'territory' && (
-                <>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Secteur / Chefferie</Form.Label>
-                      <Form.Control type="text" {...register('secteurOuChefferie')} />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Groupement</Form.Label>
-                      <Form.Control type="text" {...register('groupement')} />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6} className="mb-3">
-                    <Form.Group>
-                      <Form.Label>Village (zone rurale)</Form.Label>
-                      <Form.Control type="text" {...register('villageRural')} />
-                    </Form.Group>
-                  </Col>
-                </>
-              )}
+              {typeSelection === 'quartier' && (
+  <>
+    <Col md={6} className="mb-3">
+      <Form.Group>
+        <Form.Label>Commune</Form.Label>
+        <Form.Select {...register('sector')} disabled={!cityId} isInvalid={!!errors.sector}>
+          <option value="">Sélectionner la commune</option>
+          {sectors.map((sector) => (
+            <option key={sector.id} value={sector.id}>{sector.name}</option>
+          ))}
+        </Form.Select>
+        <Form.Control.Feedback type="invalid">{errors.sector?.message}</Form.Control.Feedback>
+      </Form.Group>
+    </Col>
 
-              <Col md={6} className="mb-3">
-                <Form.Group>
-                  <Form.Label>Numéro de parcelle / maison</Form.Label>
-                  <Form.Control type="text" {...register('numeroParcelle')} />
-                </Form.Group>
-              </Col>
+    <Col md={6} className="mb-3">
+      <Form.Group>
+        <Form.Label>Quartier</Form.Label>
+        <Form.Select {...register('quartier')} disabled={!sectorId} isInvalid={!!errors.quartier}>
+          <option value="">Sélectionner le quartier</option>
+          {(sectors.find((sector) => sector.id === sectorId)?.quartiers ?? []).map((q) => (
+            <option key={q.id} value={q.id}>{q.name}</option>
+          ))}
+        </Form.Select>
+        <Form.Control.Feedback type="invalid">{errors.quartier?.message}</Form.Control.Feedback>
+      </Form.Group>
+    </Col>
+  </>
+)}
 
+            </Row>
+
+            <Row>
               <Col md={12} className="mb-3">
                 <Form.Group>
-                  <Form.Label>Adresse</Form.Label>
-                  <Form.Control as="textarea" rows={3} {...register('addressLine1')} style={{ resize: 'none' }} />
+                  <Form.Label>Adresse complète</Form.Label>
+                  <Form.Control
+                    type="text"
+                    {...register('addressLine1')}
+                    placeholder="Ex: Rue 3, Kinshasa, RDC"
+                    isInvalid={!!errors.addressLine1}
+                  />
+                  <Form.Control.Feedback type="invalid">{errors.addressLine1?.message}</Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
 
-            <div className="d-flex justify-content-between mt-4">
-              <Button variant="secondary" onClick={prevStep} type="button">Retour</Button>
-              <Button variant="primary" type="submit">Suivant</Button>
+            <div className="form-buttons d-flex justify-content-between">
+              <Button variant="secondary" onClick={prevStep}>Retour</Button>
+              <Button type="submit" variant="primary">Suivant</Button>
             </div>
           </Form>
         </Col>

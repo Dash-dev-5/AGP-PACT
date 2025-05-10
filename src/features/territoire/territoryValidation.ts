@@ -27,14 +27,17 @@ export const citySchema = z.object({
   sectors: z.array(sectorSchema),
 });
 
+import { z } from "zod";
+
 export const territorySchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, { message: "Le nom est requis" }),
   slug: z.string().min(1, { message: "Le slug est requis" }),
   referenceNumber: z.string().min(1, { message: "Le numéro de référence est requis" }),
-  cities: z.array(citySchema),
-  isProjectConcern: z.boolean(),
+  provinceId: z.string().uuid(),
+  villages: z.array(z.any()), // ou définis un vrai schema pour les villages si nécessaire
 });
+
 
 // === CRUD validations ===
 

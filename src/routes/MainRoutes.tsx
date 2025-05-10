@@ -42,6 +42,8 @@ const AnonymousComplaint = Loadable(lazy(() => import('sections/landing/anonymou
 const Province = Loadable(lazy(() => import('pages/apps/location/province')));
 const Territoire = Loadable(lazy(() => import('pages/apps/location/territoire')));
 const Ville = Loadable(lazy(() => import('pages/apps/location/ville')));
+const Commune = Loadable(lazy(() => import('pages/apps/location/commune')));
+const Villages = Loadable(lazy(() => import('pages/apps/location/villages')));
 const GestionPap = Loadable(lazy(() => import('pages/apps/pap')));
 const AddPap = Loadable(lazy(() => import('pages/apps/pap/AddPap')));
 const UpdatePap = Loadable(lazy(() => import('pages/apps/pap/UpdatePap')));
@@ -251,6 +253,14 @@ const MainRoutes = {
             {
               path: 'ville',
               element: <Ville />
+            },
+            {
+              path: 'commune',
+              element: <Commune />
+            },
+            {
+              path: 'villages',
+              element: <Villages />
             }
           ]
         }

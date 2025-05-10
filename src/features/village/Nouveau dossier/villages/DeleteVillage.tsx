@@ -1,28 +1,39 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { deleteVillage } from 'features/village/villageSlice';
+import { DeleteVillageType } from 'features/village/villageType';
+import { deleteVillageSchema } from 'features/village/villageValidation';
+
 import React from 'react';
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import {DeleteVillageType} from 'features/village/villageType';
-const DeleteVillage: React.FC<{ id: string; name: string }> = ({ id, name }) => {
-  const [show, setShow] = React.useState(false);
-  const dispatch = useAppDispatch();
+import { toast } from 'react-toastify';
+
+const DeleteVillage = ({ id, name }: { id: string; name: string }) => {
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors }
-  } = useForm<DeleteVillageType>();
+  } = useForm<DeleteVillageType>({
+    defaultValues: {
+      id
+    },
+    resolver: zodResolver(deleteVillageSchema)
+  });
 
-  const { deleteStatus } = useAppSelector((state) => state.village);
+  const [show, setShow] = React.useState(false);
+  const dispatch = useAppDispatch();
+  const { deleteStatus } = useAppSelector((state) => state.Villages);
 
   const submitDelete = async (data: DeleteVillageType) => {
     try {
-      await dispatch(deleteVillage({ id, reason: data.reason })).unwrap();
+      await dispatch(deleteVillage(data)).unwrap();
+      toast.success('Quartier/Village supprimé avec succès', { autoClose: 2000 });
       handleClose();
     } catch (error) {
-      setError('reason', { message: 'Une erreur est survenue' });
+      setError('reason', { message: String(error) });
     }
   };
 
@@ -35,25 +46,27 @@ const DeleteVillage: React.FC<{ id: string; name: string }> = ({ id, name }) => 
       <Button type="button" variant="danger" onClick={() => setShow(true)}>
         <FaRegTrashAlt />
       </Button>
-
       {show && (
-        <Modal show={show} onHide={handleClose} centered={true}>
+        <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Suprimer le Village {deleteStatus === 'loading' && <Spinner animation="border" />}</Modal.Title>
+            <Modal.Title>
+              Supprimer le quartier/village{' '}
+              {deleteStatus === 'loading' && <Spinner animation="border" size="sm" />}
+            </Modal.Title>
           </Modal.Header>
           <Form onSubmit={handleSubmit(submitDelete)}>
             <Modal.Body className="p-4">
-              <p>Confirmer la suppression Village ?</p>
-              <p>{name}</p>
+              <p>Confirmer la suppression du quartier/village ?</p>
+              <p className="fw-bold">{name}</p>
 
               <Form.Group className="mb-3">
                 <Form.Label>Raison</Form.Label>
-                <Form.Select {...register('reason', { required: true })}>
+                <Form.Select {...register('reason', { required: 'Ce champ est requis' })}>
                   <option value="">-- Choisir --</option>
-                  <option value="Bad data">Données erronées</option>
-                  <option value="Data created by mistake and more">Données créées par erreur</option>
+                  <option value="Bad data">Données erronées</option>
+                  <option value="Data created by mistake and more">Données créées par erreur</option>
                 </Form.Select>
-                {errors.reason && <span className="text-danger">Ce champ est requis</span>}
+                {errors.reason && <span className="text-danger mt-2">{errors.reason.message}</span>}
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>

@@ -17,6 +17,7 @@ import DeleteCity from './DeleteVille';
 export default function Ville() {
   const [show, setShow] = useState(false);
   const [idProvince, setIdProvince] = useState("");
+  const [idProvinceForAdd, setIdProvinceForAdd] = useState("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -45,7 +46,7 @@ export default function Ville() {
   const onSubmit = async (data: CreateCity) => {
     console.log("1111", data);
   
-  const cityData = { ...data, province: idProvince };
+  const cityData = {...data};
 
     console.log("cityData", cityData);  
     const toastId = toast.loading('Veuillez patienter...');
@@ -201,38 +202,43 @@ export default function Ville() {
   </Modal.Header>
   <Modal.Body>
     <form onSubmit={handleSubmit(onSubmit)}>
-  <div className="form-group mb-3">
-    <label htmlFor="name">Nom</label>
-    <input
-      id="name"
-      className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-      {...register('name', { required: 'Le nom est obligatoire' })}
-    />
-    {errors.name && <small className="text-danger">{errors.name.message}</small>}
-  </div>
-  <div className="form-group mb-3">
-    <label htmlFor="province">Province</label>
-    <input
-      type="hidden"
-      value={idProvince}
-      {...register('province')}
-    />
-    <input
-      id="province"
-      className="form-control"
-      style={{ marginTop: 12 }}
-      value={idProvince}
-      disabled
-    />
-    {errors.province && <small className="text-danger">{errors.province.message}</small>}
-  </div>
-  <Button variant="primary" type="submit" disabled={isSubmitting}>
-    {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
-  </Button>
-</form>
+      <div className="form-group mb-3">
+        <label htmlFor="name">Nom</label>
+        <input
+          id="name"
+          className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+          {...register('name', { required: 'Le nom est obligatoire' })}
+        />
+        {errors.name && <small className="text-danger">{errors.name.message}</small>}
+      </div>
+      
+      {/* Sélection de la province dans le modal */}
+      <div className="form-group mb-3">
+        <label htmlFor="province">Province</label>
+       <Form.Select
+          id="province"
+          {...register('province', { required: 'La province est obligatoire' })} // Utilisation de register de react-hook-form
+          defaultValue={idProvinceForAdd} // Utilisation de defaultValue pour initialiser la valeur si nécessaire
+        >
+          <option value="">-- Sélectionnez une province --</option>
+          {provinces.map((province) => (
+            <option key={province.id} value={province.id}>
+              {province.name}
+            </option>
+          ))}
+        </Form.Select>
+{errors.province && <small className="text-danger">{errors.province.message}</small>}
 
+        {errors.province && <small className="text-danger">{errors.province.message}</small>}
+      </div>
+      
+      <Button variant="primary" type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+      </Button>
+    </form>
   </Modal.Body>
 </Modal>
+
     </>
   );
 }
