@@ -69,6 +69,8 @@ export default function Village() {
   useEffect(() => {
     if (idTarget) {
       dispatch(fetchVillages({ id: idTarget }));
+      console.log('vvvvvvvvvvvv :',villages);
+      
     }
   }, [dispatch, idTarget]);
 
@@ -233,43 +235,65 @@ export default function Village() {
           </tr>
         </thead>
         <tbody>
-          {status === 'loading' && (
-            <tr>
-              <td colSpan={5} className="text-center">
-                <Spinner animation="border" size="sm" />
-              </td>
-            </tr>
-          )}
-          {status === 'failed' && (
-            <tr>
-              <td colSpan={5} className="text-danger text-center">
-                {error}
-              </td>
-            </tr>
-          )}
-          {status === 'succeeded' && villages.length > 0 ? (
-            villages.map((village, index) => (
-              <tr key={village.id}>
-                <td>{index + 1}</td>
-                <td>{village.name}</td>
-                <td>{village.committeeName}</td>
-                <td>{village.referenceNumber}</td>
-                <td>
-                  <div className="d-flex gap-2 justify-content-center">
-                    <UpdateVillage village={village} />
-                    <DeleteVillage id={village.id} name={village.name} />
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="text-center">
-                Aucun quartier/village trouvé
-              </td>
-            </tr>
-          )}
-        </tbody>
+  {status === 'loading' && (
+    <tr>
+      <td colSpan={5} className="text-center">
+        <Spinner animation="border" size="sm" />
+      </td>
+    </tr>
+  )}
+
+  {status === 'failed' && (
+    <tr>
+      <td colSpan={5} className="text-danger text-center">
+        {error}
+      </td>
+    </tr>
+  )}
+
+  {type === 'quartier' && idTarget ? (
+    (sectors.find((sector) => sector.id === idTarget)?.villages ?? []).length > 0 ? (
+      (sectors.find((sector) => sector.id === idTarget)?.villages ?? []).map((village, index) => (
+        <tr key={village.id}>
+          <td>{index + 1}</td>
+          <td>{village.name}</td>
+          <td>{village.committeeName}</td>
+          <td>{village.referenceNumber}</td>
+          <td>
+            <div className="d-flex gap-2 justify-content-center">
+              <UpdateVillage village={village} />
+              <DeleteVillage id={village.id} name={village.name} />
+            </div>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan={5} className="text-center">Aucun quartier trouvé</td>
+      </tr>
+    )
+  ) : status === 'succeeded' && villages.length > 0 ? (
+    villages.map((village, index) => (
+      <tr key={village.id}>
+        <td>{index + 1}</td>
+        <td>{village.name}</td>
+        <td>{village.committeeName}</td>
+        <td>{village.referenceNumber}</td>
+        <td>
+          <div className="d-flex gap-2 justify-content-center">
+            <UpdateVillage village={village} />
+            <DeleteVillage id={village.id} name={village.name} />
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={5} className="text-center">Aucun quartier/village trouvé</td>
+    </tr>
+  )}
+</tbody>
+
       </Table>
 
       {/* Modal pour l'ajout */}

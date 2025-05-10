@@ -13,7 +13,7 @@ import { z } from 'zod';
 
 const FormData = z.object({
   province: z.string().min(1, { message: 'La province est requise' }),
-  typeZone: z.string().min(1, { message: 'Le type de zone est requis' }),
+  typeZone: z.string().optional(), // non utilisé dans RHF mais utile si tu veux le valider
   city: z.string().optional(),
   sector: z.string().optional(),
   village: z.string().optional(),
@@ -82,6 +82,7 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
     setValue('village', '');
     setSectors([]);
     setVillages([]);
+
     if (provinceId && typeSelection === 'village') {
       dispatch(fetchTerritories({ id: provinceId }));
     } else if (provinceId && typeSelection === 'quartier') {
@@ -105,7 +106,11 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
   }, [sectorId, sectors, setValue]);
 
   const onSubmit = (data: z.infer<typeof FormData>) => {
-    dispatch(saveStepData({ complainant: { ...formData.complainant, ...data } }));
+    const updatedData = {
+      ...formData.complainant,
+      ...data
+    };
+    dispatch(saveStepData({ complainant: updatedData }));
   };
 
   return (
@@ -188,35 +193,34 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
               )}
 
               {typeSelection === 'quartier' && (
-  <>
-    <Col md={6} className="mb-3">
-      <Form.Group>
-        <Form.Label>Commune</Form.Label>
-        <Form.Select {...register('sector')} disabled={!cityId} isInvalid={!!errors.sector}>
-          <option value="">Sélectionner la commune</option>
-          {sectors.map((sector) => (
-            <option key={sector.id} value={sector.id}>{sector.name}</option>
-          ))}
-        </Form.Select>
-        <Form.Control.Feedback type="invalid">{errors.sector?.message}</Form.Control.Feedback>
-      </Form.Group>
-    </Col>
+                <>
+                  <Col md={6} className="mb-3">
+                    <Form.Group>
+                      <Form.Label>Commune</Form.Label>
+                      <Form.Select {...register('sector')} disabled={!cityId} isInvalid={!!errors.sector}>
+                        <option value="">Sélectionner la commune</option>
+                        {sectors.map((sector) => (
+                          <option key={sector.id} value={sector.id}>{sector.name}</option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">{errors.sector?.message}</Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
 
-    <Col md={6} className="mb-3">
-      <Form.Group>
-        <Form.Label>Quartier</Form.Label>
-        <Form.Select {...register('quartier')} disabled={!sectorId} isInvalid={!!errors.quartier}>
-          <option value="">Sélectionner le quartier</option>
-          {(sectors.find((sector) => sector.id === sectorId)?.quartiers ?? []).map((q) => (
-            <option key={q.id} value={q.id}>{q.name}</option>
-          ))}
-        </Form.Select>
-        <Form.Control.Feedback type="invalid">{errors.quartier?.message}</Form.Control.Feedback>
-      </Form.Group>
-    </Col>
-  </>
-)}
-
+                  <Col md={6} className="mb-3">
+                    <Form.Group>
+                      <Form.Label>Quartier</Form.Label>
+                      <Form.Select {...register('quartier')} disabled={!sectorId} isInvalid={!!errors.quartier}>
+                        <option value="">Sélectionner le quartier</option>
+                        {(sectors.find((sector) => sector.id === sectorId)?.villages ?? []).map((q) => (
+                          <option key={q.id} value={q.id}>{q.name}</option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">{errors.quartier?.message}</Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </>
+              )}
             </Row>
 
             <Row>

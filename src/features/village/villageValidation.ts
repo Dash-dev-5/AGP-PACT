@@ -19,10 +19,13 @@ export const createVillageSchema = z.object({
 
 });
 
+
 export const updateVillageSchema = z.object({
-  id: z.string().uuid({ message: "L'identifiant est invalide" }),
-  city: z.string().uuid({ message: "La ville est requise" }),
-  name: z.string().min(3, { message: "Le nom doit comporter au moins 3 caractères" })
+  id: z.string(),
+  name: z.string().min(1, 'Le nom est requis'),
+  city: z.string().min(1, 'La ville est requise'),
+  committeeName: z.string().optional(),
+  referenceNumber: z.string().optional(),
 });
 
 export const deleteVillageSchema = z.object({

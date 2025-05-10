@@ -23,31 +23,33 @@ const UpdateVillage = ({ village }: { village: UpdateVillageType }) => {
   } = useForm<UpdateVillageType>({
     resolver: zodResolver(updateVillageSchema),
     defaultValues: {
-      id: village.id,
-      name: village.name,
-      committeeName: village.committeeName,
-      referenceNumber: village.referenceNumber,
-      city: village.city
-    }
+  id: village.id,
+  name: village.name,
+  city: village.city,
+  committeeName: village.committeeName,
+  referenceNumber: village.referenceNumber
+}
+
   });
 
   const handleClose = () => {
     reset({
-      id: village.id,
-      name: village.name,
-      committeeName: village.committeeName,
-      referenceNumber: village.referenceNumber,
-      city: village.city
-    });
+  id: village.id,
+  name: village.name,
+  city: village.city,
+  committeeName: village.committeeName,
+  referenceNumber: village.referenceNumber
+});
+
     setShow(false);
   };
 
-  const onSubmit = async (data: UpdateNeighborhood) => {
+  const onSubmit = async (data: UpdateVillageType) => {
     const { id, ...updateData } = data;
 
     try {
-      await dispatch(updateNeighborhood({ id, updateData })).unwrap();
-      handleClose();
+      await dispatch(updateVillage({ id, ...updateData })).unwrap
+      handleClose();  
       toast.success('Quartier/Village mis à jour avec succès', { autoClose: 2000 });
     } catch (error) {
       console.error('Échec de la mise à jour :', error);
