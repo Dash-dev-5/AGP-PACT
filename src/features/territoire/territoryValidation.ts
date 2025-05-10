@@ -63,7 +63,7 @@ export const addVillageSchema = z.object({
 });
 
 export const createCitySchema = z.object({
-  territory: z.string().uuid({ message: "Le territoire est requis" }),
+  province: z.string().uuid({ message: "La province est requis" }),
   name: z.string().min(3, { message: "Le nom doit comporter au moins 3 caractères" }),
 });
 
