@@ -51,8 +51,6 @@ const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
 
   const onSubmit = async (data: UpdateSectorType) => {
     try {
-      console.log('data :', data);
-      
       await dispatch(updateSector(data)).unwrap();
       toast.success('Commune mise à jour avec succès');
       handleClose();
