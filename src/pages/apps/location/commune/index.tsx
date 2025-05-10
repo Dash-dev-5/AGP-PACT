@@ -12,8 +12,8 @@ import { fetchSectors } from 'features/sector/communeSlice';
 import { fetchVillages, addNeighborhood } from 'features/village/villageSlice';
 import { CreateVillage } from 'features/village/villageType';
 import { createVillageSchema } from 'features/village/villageValidation';
-import DeleteVillage from './DeleteVillage';
-import UpdateVillage from './UpdateVillage';
+import DeleteCommune from './DeleteCommune';
+import UpdateCommune from './UpdateCommune';
 
 export default function Village() {
   const dispatch = useAppDispatch();
@@ -266,8 +266,8 @@ export default function Village() {
                 <td>{v.referenceNumber}</td>
                 <td>
                   <div className="d-flex gap-2 justify-content-center">
-                    <UpdateVillage village={v} />
-                    <DeleteVillage id={v.id} name={v.name} />
+                    <UpdateCommune sector={v} />
+                    <DeleteCommune id={v.id} name={v.name} />
                   </div>
                 </td>
               </tr>
