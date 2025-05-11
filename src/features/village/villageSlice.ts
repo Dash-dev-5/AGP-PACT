@@ -36,7 +36,9 @@ const initialState: InitialState = {
 // Actions asynchrones
 
 // Fetch quartiers/villages par ville
-export const fetchVillages = createAsyncThunk<IVillage[], { id: string }>(
+export const fetchVillages = createAsyncThunk<
+IVillage[], { id: string }
+>(
   "village/fetchVillages",
   async ({ id }, { rejectWithValue }) => {
     console.log("ffff",id);
@@ -58,17 +60,18 @@ export const fetchVillages = createAsyncThunk<IVillage[], { id: string }>(
 );
 
 // Ajouter un quartier/village
-export const addNeighborhood = createAsyncThunk<IVillage, CreateVillage>(
+export const addNeighborhood = createAsyncThunk<IVillage, CreateVillage, { rejectValue: string }>(
   "village/createVillage",
-  async (newVillage, { rejectWithValue }) => {
+  async ({ name, sector }, { rejectWithValue }) => {
     try {
-      const response = await postRequest("villages", newVillage);
+      const response = await postRequest<IVillage>("villages", { name, sector });
       return response.data;
     } catch (error) {
       return rejectWithValue(parseError(error));
     }
   }
 );
+
 
 // Mettre à jour un quartier/village
 export const updateVillage = createAsyncThunk<IVillage, UpdateVillageType>(
