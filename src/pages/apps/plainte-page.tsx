@@ -21,6 +21,8 @@ const PlaintePage = () => {
 
   React.useEffect(() => {
     dispatch(fetchComplaints({ pageSize, currentPage: currentPageState, filter: searchTerm }));
+    console.log('Complaints:', complaints);
+    
   }, [dispatch, currentPageState, searchTerm]);
 
   React.useEffect(() => {

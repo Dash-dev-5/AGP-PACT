@@ -163,7 +163,7 @@ export default function Commune() {
                           >
                             Villages
                           </Button>
-                          <UpdateCommune sector={sector} />
+                          <UpdateCommune  sector={{ ...sector, city: idCity }} />
                           <DeleteCommune id={sector.id} name={sector.name} />
                         </div>
                       </td>

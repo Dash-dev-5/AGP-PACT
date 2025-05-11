@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { updateSector } from 'features/sector/communeSlice';
-import { updateSectorSchema } from 'features/sector/communeValidation';
+import { updateSectorSchema,sectorSchema } from 'features/sector/communeValidation';
 import { UpdateSectorType } from 'features/sector/communeType';
 import { FaRegEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -36,9 +36,9 @@ const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
 
   useEffect(() => {
     if (sector.city) {
-      dispatch(fetchCitiesByTerritory({ id: sector.territoryId }));
+      dispatch(fetchCitiesByTerritory({ id: sector.id }));
     }
-  }, [dispatch, sector.city, sector.territoryId]);
+  }, [dispatch, sector.city, sector.id]);
 
   const handleShow = () => {
     reset({ id: sector.id, name: sector.name, city: sector.city });

@@ -40,7 +40,7 @@ export default function Village() {
     formState: { errors, isSubmitting }
   } = useForm<CreateVillage>({
     resolver: zodResolver(createVillageSchema),
-    defaultValues: { city: '' }  // si vous attendez un champ "city" pour le quartier
+    // defaultValues: { city: '' }  // si vous attendez un champ "city" pour le quartier
   });
 
   // Au chargement, récupère les provinces
@@ -91,7 +91,7 @@ export default function Village() {
     
     const payload =
       type === 'village'
-        ? { name: data.name, territory: idTarget }
+        ? { name: data.name, sector: idTarget }
         : { name: data.name, sector: idTarget };
     const toastId = toast.loading('Veuillez patienter...');
     try {
@@ -261,7 +261,7 @@ export default function Village() {
           <td>{village.referenceNumber}</td>
           <td>
             <div className="d-flex gap-2 justify-content-center">
-              <UpdateVillage village={village} />
+              <UpdateVillage village={{id: village.id , name : village.name,city : idTarget}} />
               <DeleteVillage id={village.id} name={village.name} />
             </div>
           </td>
@@ -281,7 +281,7 @@ export default function Village() {
         <td>{village.referenceNumber}</td>
         <td>
           <div className="d-flex gap-2 justify-content-center">
-            <UpdateVillage village={village} />
+            <UpdateVillage village={{id: village.id , name : village.name,city : idTarget}} />
             <DeleteVillage id={village.id} name={village.name} />
           </div>
         </td>

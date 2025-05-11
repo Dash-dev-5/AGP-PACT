@@ -19,12 +19,7 @@ const FormData = z.object({
   village: z.string().optional(),
   addressLine1: z.string().min(1, { message: 'Adresse est requise' }),
   commune: z.string().optional(),
-  secteurOuChefferie: z.string().optional(),
   quartier: z.string().optional(),
-  groupement: z.string().optional(),
-  villageRural: z.string().optional(),
-  avenue: z.string().optional(),
-  numeroParcelle: z.string().optional()
 });
 
 interface Form4RegerationProps {
@@ -49,18 +44,14 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
   } = useForm<z.infer<typeof FormData>>({
     resolver: zodResolver(FormData),
     defaultValues: {
-      province: formData.complainant.province,
-      city: formData.complainant.city,
-      sector: formData.complainant.sector,
-      village: formData.complainant.village,
-      addressLine1: formData.complainant.addressLine1,
-      commune: formData.complainant.commune,
-      secteurOuChefferie: formData.complainant.secteurOuChefferie,
-      quartier: formData.complainant.quartier,
-      groupement: formData.complainant.groupement,
-      villageRural: formData.complainant.villageRural,
-      avenue: formData.complainant.avenue,
-      numeroParcelle: formData.complainant.numeroParcelle
+      province: formData.complainant.province || '',
+      city: formData.complainant.city || '',
+      sector: formData.complainant.sector || '',
+      village: formData.complainant.village || '',
+      addressLine1: formData.complainant.addressLine1 || '',
+      commune: formData.complainant.village || '',
+      quartier: formData.complainant.village || '',
+
     }
   });
 
@@ -90,7 +81,18 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
     }
   }, [provinceId, typeSelection, dispatch, setValue]);
 
-  const dynamicCities: ICity[] = typeSelection === 'village' ? territories : cities;
+  const dynamicCities: ICity[] = typeSelection === 'village'
+    ? territories.map((territory) => ({
+        ...territory,
+        sectors: territory.villages.map((village) => ({
+          villages: [],
+          name: village.name,
+          id: village.id,
+          slug: village.slug,
+          referenceNumber: village.referenceNumber,
+        })),
+      }))
+    : cities;
 
   useEffect(() => {
     setValue('sector', '');

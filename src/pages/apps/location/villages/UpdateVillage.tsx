@@ -46,6 +46,8 @@ const UpdateVillage = ({ village }: { village: UpdateVillageType }) => {
 
   const onSubmit = async (data: UpdateVillageType) => {
     const { id, ...updateData } = data;
+    console.log('updateData', data);
+    
 
     try {
       await dispatch(updateVillage({ id, ...updateData })).unwrap

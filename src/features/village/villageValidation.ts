@@ -16,6 +16,7 @@ export const villageSchema = z.object({
 
 export const createVillageSchema = z.object({
   name: z.string().nonempty({ message: "Le nom est requis" }),
+  sector: z.string().nonempty({ message: "Le nom est requis" }),
 
 });
 

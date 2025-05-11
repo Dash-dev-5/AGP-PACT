@@ -47,24 +47,32 @@ export const fetchSectors = createAsyncThunk<ISector[], { id: string }>(
     }
   }
 )
-
-export const createSector = createAsyncThunk<ISector, CreateSector>(
+export const createSector = createAsyncThunk<
+  ISector, // Résultat attendu
+  CreateSector, // Payload d'entrée (typiquement : { name: string; city: string })
+  { rejectValue: string } // Valeur possible de rejet
+>(
   "sector/createSector",
   async (newSector, { rejectWithValue }) => {
     try {
-      const response = await postRequest("sectors", newSector)
-      return response.data
+      const response = await postRequest<ISector>("sectors", newSector); // <--- ici le typage est crucial
+      return response.data;
     } catch (error) {
-      return rejectWithValue(parseError(error))
+      return rejectWithValue(parseError(error));
     }
   }
-)
+);
 
-export const updateSector = createAsyncThunk<ISector, UpdateSectorType>(
+
+export const updateSector = createAsyncThunk<
+  ISector, // type de retour attendu (fulfilled)
+  { id: string; name: string; city: string }, // paramètres d'entrée (payload)
+  { rejectValue: string } // optionnel : type de la valeur de rejet
+>(
   'sector/updateSector',
-  async ({ id, ...rest }, { rejectWithValue }) => {
+  async ({ id, name, city }, { rejectWithValue }) => {
     try {
-      const response = await putRequest(`sectors/${id}`, rest); // rest contient { name, city }
+      const response = await putRequest<ISector>(`sectors/${id}`, { name, city });
       return response.data;
     } catch (error) {
       return rejectWithValue(parseError(error));
