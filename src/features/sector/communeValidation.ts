@@ -38,5 +38,5 @@ export const deleteSectorSchema = z.object({
   id: z.string().uuid({ message: "L'identifiant est invalide" }).nullable(),
   reason: z.enum(["Bad data", "Data created by mistake and more"], {
     message: "La raison est requise"
-  })
+  }).nullable()
 })

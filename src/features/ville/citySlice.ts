@@ -2,11 +2,18 @@ import { type PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/tool
 import { deleteRequest, getRequest, parseError, postRequest, putRequest } from "utils/verbes"
 import { endpoints } from "utils/endpoints"
 
-import type { CreateCity, DeleteCityType, ICity, UpdateCityType } from "./villeType"
+import type { CreateCity, DeleteCityType, UpdateCityType } from "./villeType"
 import { z } from "zod"
 import { citySchema } from "./cityValidation"
 
 type statusType = "idle" | "loading" | "succeeded" | "failed"
+
+interface ICity {
+  id: string | null;
+  province: string | null;
+  name: string | null;
+  territory?: string; // Ajoutez cette ligne si le champ existe
+}
 
 type InitialState = {
   cities: ICity[]
@@ -95,17 +102,27 @@ export const updateCity = createAsyncThunk<ICity, UpdateCityType>(
   },
 )
 
-export const deleteCity = createAsyncThunk<string, DeleteCityType>(
+export const deleteCity = createAsyncThunk<
+  string,
+  { id: string | null; reason: "Bad data" | "Data created by mistake and more" },
+  { rejectValue: string }
+>(
   "city/deleteCity",
   async (params, { rejectWithValue }) => {
-    try {
-      await deleteRequest(endpoints.cities.delete(params.id), { reason: params.reason })
-      return params.id
-    } catch (error) {
-      return rejectWithValue(parseError(error))
+    const { id, reason } = params;
+    
+    if (!id) {
+      return rejectWithValue("Invalid city ID");
     }
-  },
-)
+
+    try {
+      await deleteRequest(`cities/${id}`, { reason });
+      return id;
+    } catch (error) {
+      return rejectWithValue(parseError(error));
+    }
+  }
+);
 
 const citySlice = createSlice({
   name: "city",

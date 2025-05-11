@@ -57,13 +57,8 @@ export const createSector = createAsyncThunk<
     try {
       const response = await postRequest("sectors", newSector);
       
-      // Normalisation des données avant validation
-      const dataToValidate = {
-        ...response.data,
-        villages: response.data.villages || [] // Transforme null en []
-      };
-      
-      const validationResult = sectorSchema.safeParse(dataToValidate);
+    
+      const validationResult = sectorSchema.safeParse(response.data);
       if (!validationResult.success) {
         console.error("Validation error:", validationResult.error);
         return rejectWithValue("Invalid data received from server");

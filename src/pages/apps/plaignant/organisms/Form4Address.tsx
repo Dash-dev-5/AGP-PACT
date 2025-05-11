@@ -13,7 +13,7 @@ import { z } from 'zod';
 
 const FormData = z.object({
   province: z.string().min(1, { message: 'La province est requise' }),
-  typeZone: z.string().optional(), // non utilisé dans RHF mais utile si tu veux le valider
+  typeZone: z.string().optional(),
   city: z.string().optional(),
   sector: z.string().optional(),
   village: z.string().optional(),
@@ -49,9 +49,8 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
       sector: formData.complainant.sector || '',
       village: formData.complainant.village || '',
       addressLine1: formData.complainant.addressLine1 || '',
-      commune: formData.complainant.village || '',
-      quartier: formData.complainant.village || '',
-
+      commune: formData.complainant.commune || '',
+      quartier: formData.complainant.quartier || '',
     }
   });
 
@@ -83,28 +82,52 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
 
   const dynamicCities: ICity[] = typeSelection === 'village'
     ? territories.map((territory) => ({
-        ...territory,
-        sectors: territory.villages.map((village) => ({
+        id: territory.id ?? '',
+        name: territory.name ?? '',
+        slug: territory.slug ?? '',
+        referenceNumber: territory.referenceNumber ?? '',
+        sectors: (territory.villages ?? []).map((village) => ({
+          id: village.id ?? '',
+          name: village.name ?? '',
+          slug: village.slug ?? '',
+          referenceNumber: village.referenceNumber ?? '',
           villages: [],
-          name: village.name,
-          id: village.id,
-          slug: village.slug,
-          referenceNumber: village.referenceNumber,
         })),
       }))
-    : cities;
+    : cities.map(city => ({
+        id: city.id ?? '',
+        name: city.name ?? '',
+        slug: city.slug ?? '',
+        referenceNumber: city.referenceNumber ?? '',
+        sectors: city.sectors?.map(sector => ({
+          id: sector.id ?? '',
+          name: sector.name ?? '',
+          slug: sector.slug ?? '',
+          referenceNumber: sector.referenceNumber ?? '',
+          villages: sector.villages?.map(village => ({
+            id: village.id ?? '',
+            name: village.name ?? '',
+            slug: village.slug ?? '',
+            referenceNumber: village.referenceNumber ?? '',
+            committeeName: village.committeeName ?? null,
+            committeeId: village.committeeId ?? null,
+            projectSiteName: village.projectSiteName ?? null,
+            projectSiteId: village.projectSiteId ?? null,
+          })) ?? [],
+        })) ?? [],
+      }));
 
   useEffect(() => {
     setValue('sector', '');
     setValue('village', '');
     const selectedCity = dynamicCities.find((c) => c.id === cityId);
-    setSectors(selectedCity?.sectors || []);
+    setSectors(selectedCity?.sectors ?? []);
   }, [cityId, dynamicCities, setValue]);
 
   useEffect(() => {
     setValue('village', '');
     const selectedSector = sectors.find((s) => s.id === sectorId);
-    setVillages(selectedSector?.villages || []);
+    setVillages(selectedSector?.villages ?? []);
   }, [sectorId, sectors, setValue]);
 
   const onSubmit = (data: z.infer<typeof FormData>) => {
@@ -114,6 +137,7 @@ const Form4Address: React.FC<Form4RegerationProps> = ({ formData, prevStep, save
     };
     dispatch(saveStepData({ complainant: updatedData }));
   };
+
 
   return (
     <div className="form4-address-container">

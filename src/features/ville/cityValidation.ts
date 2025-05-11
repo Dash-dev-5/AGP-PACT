@@ -23,11 +23,10 @@ export const sectorSchema = z.object({
 
 // === Validation pour une ville ===
 export const citySchema = z.object({
-  id: z.string().uuid({ message: "L'identifiant de la ville est invalide" }).nullable(),
-  name: z.string().min(1, { message: "Le nom est requis" }).nullable(),
-  slug: z.string().min(1, { message: "Le slug est requis" }).nullable(),
-  referenceNumber: z.string().min(1, { message: "Le numéro de référence est requis" }).nullable(),
-  sectors: z.array(sectorSchema).nullable() || null
+  id: z.string().nullable(),
+  province: z.string().nullable(),
+  name: z.string().nullable(),
+  territory: z.string().optional(), // Ajoutez cette ligne
 });
 
 // === Validation pour un territoire ===

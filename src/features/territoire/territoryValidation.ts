@@ -36,6 +36,7 @@ export const territorySchema = z.object({
   referenceNumber: z.string().min(1, { message: "Le numéro de référence est requis" }).nullable(),
   provinceId: z.string().uuid().nullable(),
   villages: z.array(z.any()).nullable(), // ou définis un vrai schema pour les villages si nécessaire
+  cities: z.array(z.any()).nullable(), // ou définis un vrai schema pour les villages si nécessaire
 });
 
 
