@@ -68,7 +68,7 @@ export const updateVillage = createAsyncThunk<IVillage, { id: string; village: A
   },
 )
 
-export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }>(
+export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }, {rejectValue : string}>(
   "territory/fetchTerritory",
   async ({ id }, { rejectWithValue }) => {
     try {
