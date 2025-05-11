@@ -261,7 +261,7 @@ export default function Village() {
           <td>{village.referenceNumber}</td>
           <td>
             <div className="d-flex gap-2 justify-content-center">
-              <UpdateVillage village={{id: village.id , name : village.name,city : idTarget}} />
+              <UpdateVillage village={{id: village.id , name : village.name,sector : idTarget}} />
               <DeleteVillage id={village.id} name={village.name} />
             </div>
           </td>
@@ -281,7 +281,7 @@ export default function Village() {
         <td>{village.referenceNumber}</td>
         <td>
           <div className="d-flex gap-2 justify-content-center">
-            <UpdateVillage village={{id: village.id , name : village.name,city : idTarget}} />
+            <UpdateVillage village={{id: village.id , name : village.name, sector : idTarget}} />
             <DeleteVillage id={village.id} name={village.name} />
           </div>
         </td>

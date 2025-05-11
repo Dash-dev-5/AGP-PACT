@@ -24,9 +24,7 @@ export const createVillageSchema = z.object({
 export const updateVillageSchema = z.object({
   id: z.string(),
   name: z.string().min(1, 'Le nom est requis'),
-  city: z.string().min(1, 'La ville est requise'),
-  committeeName: z.string().optional(),
-  referenceNumber: z.string().optional(),
+  sector: z.string().min(1, 'La ville est requise'),
 });
 
 export const deleteVillageSchema = z.object({

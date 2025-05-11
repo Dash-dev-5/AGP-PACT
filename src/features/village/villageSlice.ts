@@ -74,17 +74,22 @@ export const addNeighborhood = createAsyncThunk<IVillage, CreateVillage, { rejec
 
 
 // Mettre à jour un quartier/village
-export const updateVillage = createAsyncThunk<IVillage, UpdateVillageType>(
+export const updateVillage = createAsyncThunk<
+  IVillage, // type de retour en cas de succès
+  UpdateVillageType, // type de l'argument
+  { rejectValue: string } // type de rejet
+>(
   "village/updateVillage",
-  async ({ id, ...rest }, { rejectWithValue }) => {
+  async ({ id, name, sector }, { rejectWithValue }) => {
     try {
-      const response = await putRequest(`villages/${id}`, rest);
-      return response.data;
+      const response = await putRequest(`villages/${id}`, { name, sector });
+      return response.data as IVillage; // on précise que response.data est bien du type IVillage
     } catch (error) {
       return rejectWithValue(parseError(error));
     }
   }
 );
+
 
 // Supprimer un quartier/village
 export const deleteVillage = createAsyncThunk<string, DeleteVillageType>(

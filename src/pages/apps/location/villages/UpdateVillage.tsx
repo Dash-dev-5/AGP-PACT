@@ -25,9 +25,7 @@ const UpdateVillage = ({ village }: { village: UpdateVillageType }) => {
     defaultValues: {
   id: village.id,
   name: village.name,
-  city: village.city,
-  committeeName: village.committeeName,
-  referenceNumber: village.referenceNumber
+  sector: village.sector,
 }
 
   });
@@ -36,21 +34,19 @@ const UpdateVillage = ({ village }: { village: UpdateVillageType }) => {
     reset({
   id: village.id,
   name: village.name,
-  city: village.city,
-  committeeName: village.committeeName,
-  referenceNumber: village.referenceNumber
+  sector: village.sector,
 });
 
     setShow(false);
   };
 
   const onSubmit = async (data: UpdateVillageType) => {
-    const { id, ...updateData } = data;
-    console.log('updateData', data);
+    // const { id , ...updateData  } = data;
+    // console.log('updateData', updateData);
     
 
     try {
-      await dispatch(updateVillage({ id, ...updateData })).unwrap
+      await dispatch(updateVillage({ id : data.id, name : data.name , sector : data.sector  })).unwrap()
       handleClose();  
       toast.success('Quartier/Village mis à jour avec succès', { autoClose: 2000 });
     } catch (error) {
@@ -84,35 +80,12 @@ const UpdateVillage = ({ village }: { village: UpdateVillageType }) => {
                 {errors.name && <div className="text-danger">{errors.name.message}</div>}
               </div>
               <div className="form-group mb-3">
-                <label htmlFor="committeeName">Nom du comité</label>
+                <label htmlFor="referenceNumber">secteur id</label>
                 <input
-                  id="committeeName"
+                  id="sector"
                   className="form-control my-2"
-                  {...register('committeeName')}
+                  {...register('sector')}
                 />
-              </div>
-              <div className="form-group mb-3">
-                <label htmlFor="referenceNumber">Numéro de référence</label>
-                <input
-                  id="referenceNumber"
-                  className="form-control my-2"
-                  {...register('referenceNumber')}
-                />
-              </div>
-              <div className="form-group mb-3">
-                <label htmlFor="city">Ville</label>
-                <Form.Select
-                  id="city"
-                  {...register('city', { required: 'La ville est requise' })}
-                >
-                  <option value="">-- Sélectionnez une ville --</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </Form.Select>
-                {errors.city && <div className="text-danger">{errors.city.message}</div>}
               </div>
               {updateStatus === 'failed' && <p className="text-danger">Une erreur est survenue !</p>}
             </Modal.Body>
