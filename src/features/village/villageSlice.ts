@@ -39,9 +39,13 @@ const initialState: InitialState = {
 export const fetchVillages = createAsyncThunk<IVillage[], { id: string }>(
   "village/fetchVillages",
   async ({ id }, { rejectWithValue }) => {
+    console.log("ffff",id);
+    
     try {
       const response = await getRequest(`villages/${id}`);
+      console.log("result", response.data);
       const result = z.array(villageSchema).safeParse(response.data);
+      
       if (!result.success) {
         console.error("Erreur de validation des quartiers/villages", result.error);
         throw new Error("Données invalides");
