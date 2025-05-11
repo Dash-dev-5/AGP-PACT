@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/tool
 import { getRequest, postRequest, putRequest, deleteRequest, parseError } from "utils/verbes"
 import { z } from "zod"
 import { sectorSchema } from "./communeValidation"
-import type { ISector, CreateSector, UpdateSectorType, DeleteSectorType } from "./communeType"
+import type { ISector, CreateSector, DeleteSectorType } from "./communeType"
 
 type statusType = "idle" | "loading" | "succeeded" | "failed"
 
@@ -45,59 +45,53 @@ export const fetchSectors = createAsyncThunk<ISector[], { id: string }>(
     } catch (error) {
       return rejectWithValue(parseError(error))
     }
-  }
+  },
 )
-export const createSector = createAsyncThunk<
-  ISector,
-  CreateSector,
-  { rejectValue: string }
->(
+export const createSector = createAsyncThunk<ISector, CreateSector, { rejectValue: string }>(
   "sector/createSector",
   async (newSector, { rejectWithValue }) => {
     try {
-      const response = await postRequest("sectors", newSector);
-      
-    
-      const validationResult = sectorSchema.safeParse(response.data);
-      if (!validationResult.success) {
-        console.error("Validation error:", validationResult.error);
-        return rejectWithValue("Invalid data received from server");
-      }
-      
-      return validationResult.data;
-    } catch (error) {
-      return rejectWithValue(parseError(error));
-    }
-  }
-);
+      const response = await postRequest("sectors", newSector)
 
+      const validationResult = sectorSchema.safeParse(response.data)
+      if (!validationResult.success) {
+        console.error("Validation error:", validationResult.error)
+        return rejectWithValue("Invalid data received from server")
+      }
+
+      return validationResult.data
+    } catch (error) {
+      return rejectWithValue(parseError(error))
+    }
+  },
+)
 
 export const updateSector = createAsyncThunk<
   ISector, // type de retour attendu (fulfilled)
   { id: string; name: string; city: string }, // paramètres d'entrée (payload)
   { rejectValue: string } // optionnel : type de la valeur de rejet
->(
-  'sector/updateSector',
-  async ({ id, name, city }, { rejectWithValue }) => {
-    try {
-      const response = await putRequest<ISector>(`sectors/${id}`, { name, city });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(parseError(error));
-    }
+>("sector/updateSector", async ({ id, name, city }, { rejectWithValue }) => {
+  try {
+    const response = await putRequest<ISector>(`sectors/${id}`, { name, city })
+    return response.data
+  } catch (error) {
+    return rejectWithValue(parseError(error))
   }
-);
+})
 
 export const deleteSector = createAsyncThunk<string, DeleteSectorType>(
   "sector/deleteSector",
   async ({ id, reason }, { rejectWithValue }) => {
     try {
+      if (!id) {
+        return rejectWithValue("ID is required")
+      }
       await deleteRequest(`sectors/${id}`, { reason })
       return id
     } catch (error) {
       return rejectWithValue(parseError(error))
     }
-  }
+  },
 )
 
 const sectorSlice = createSlice({
@@ -141,7 +135,7 @@ const sectorSlice = createSlice({
       })
       .addCase(updateSector.fulfilled, (state, action: PayloadAction<ISector>) => {
         state.updateStatus = "succeeded"
-        const index = state.sectors.findIndex(s => s.id === action.payload.id)
+        const index = state.sectors.findIndex((s) => s.id === action.payload.id)
         if (index !== -1) state.sectors[index] = action.payload
       })
       .addCase(updateSector.rejected, (state, action) => {
@@ -156,7 +150,7 @@ const sectorSlice = createSlice({
       })
       .addCase(deleteSector.fulfilled, (state, action: PayloadAction<string>) => {
         state.deleteStatus = "succeeded"
-        state.sectors = state.sectors.filter(s => s.id !== action.payload)
+        state.sectors = state.sectors.filter((s) => s.id !== action.payload)
       })
       .addCase(deleteSector.rejected, (state, action) => {
         state.deleteStatus = "failed"

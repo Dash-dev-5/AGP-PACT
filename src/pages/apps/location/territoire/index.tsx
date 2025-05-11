@@ -1,80 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button, Modal, Row, Spinner, Table, Form } from 'react-bootstrap';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { toast } from 'react-toastify';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { createTerritorySchema } from 'features/territoire/territoryValidation';
-import { addTerritory, fetchTerritories } from 'features/territoire/territorySlice';
-import { fetchProvinces } from 'features/province/provinceSlice';
-import { CreateTerritory } from 'features/territoire/territoryType';
-import DeleteTerritoire from './DeleteTerritoire';
-import UpdateTerritoire from './UpdateTerritoire';
-import { useNavigate } from 'react-router-dom';
+"use client"
+
+import React, { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { Button, Modal, Row, Spinner, Table, Form } from "react-bootstrap"
+import { useAppDispatch, useAppSelector } from "app/hooks"
+import { toast } from "react-toastify"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { createTerritorySchema } from "features/territoire/territoryValidation"
+import { addTerritory, fetchTerritories } from "features/territoire/territorySlice"
+import { fetchProvinces } from "features/province/provinceSlice"
+import type { CreateTerritory } from "features/territoire/territoryType"
+import DeleteTerritoire from "./DeleteTerritoire"
+import UpdateTerritoire from "./UpdateTerritoire"
+import { useNavigate } from "react-router-dom"
 
 export default function Territoire() {
-  const [show, setShow] = useState(false);
-  const [idProvince, setIdProvince] = useState('');
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const [show, setShow] = useState(false)
+  const [idProvince, setIdProvince] = useState("")
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const { provinces } = useAppSelector((state) => state.province);
-  const { territories, error, status } = useAppSelector((state) => state.territory);
+  const { provinces } = useAppSelector((state) => state.province)
+  const { territories, error, status } = useAppSelector((state) => state.territory)
 
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<CreateTerritory>({
     resolver: zodResolver(createTerritorySchema),
     defaultValues: {
-      name: '',
-      province: ''
-    }
-  });
+      name: "",
+      province: "",
+    },
+  })
 
-  const provinceInModal = watch('province');
+  const provinceInModal = watch("province")
 
   useEffect(() => {
-    dispatch(fetchProvinces());
-  }, [dispatch]);
+    dispatch(fetchProvinces())
+  }, [dispatch])
 
   useEffect(() => {
     if (idProvince) {
-      dispatch(fetchTerritories({ id: idProvince }));
+      dispatch(fetchTerritories({ id: idProvince }))
     }
-  }, [dispatch, idProvince]);
+  }, [dispatch, idProvince])
 
   const onSubmit = async (data: CreateTerritory) => {
-    const toastId = toast.loading('Veuillez patienter...');
+    const toastId = toast.loading("Veuillez patienter...")
 
     try {
-      await dispatch(addTerritory(data)).unwrap();
+      await dispatch(addTerritory(data)).unwrap()
       toast.update(toastId, {
-        render: 'Territoire ajouté avec succès',
-        type: 'success',
+        render: "Territoire ajouté avec succès",
+        type: "success",
         isLoading: false,
-        autoClose: 2000
-      });
-      handleClose();
+        autoClose: 2000,
+      })
+      handleClose()
     } catch (error) {
       toast.update(toastId, {
         render: String(error),
-        type: 'error',
+        type: "error",
         isLoading: false,
-        autoClose: 3000
-      });
+        autoClose: 3000,
+      })
     }
-  };
+  }
 
   const handleClose = () => {
-    setShow(false);
-    reset();
-  };
+    setShow(false)
+    reset()
+  }
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => setShow(true)
 
   return (
     <>
@@ -109,21 +111,22 @@ export default function Territoire() {
               </tr>
             </thead>
             <tbody>
-              {status === 'loading' && (
+              {status === "loading" && (
                 <tr>
                   <td colSpan={4} className="text-center">
                     <Spinner animation="border" size="sm" />
                   </td>
                 </tr>
               )}
-              {status === 'failed' && (
+              {status === "failed" && (
                 <tr>
                   <td colSpan={4} className="text-center text-danger">
                     {error}
                   </td>
                 </tr>
               )}
-              {status === 'succeeded' && territories.length > 0 &&
+              {status === "succeeded" &&
+                territories.length > 0 &&
                 territories.map((territory, index) => (
                   <React.Fragment key={territory.id}>
                     <tr>
@@ -132,10 +135,7 @@ export default function Territoire() {
                       <td>{territory.villages?.length || 0}</td>
                       <td>
                         <div className="d-flex gap-2 justify-content-center">
-                          <Button
-                            disabled={!territory.villages?.length}
-                            onClick={() => navigate(territory.id)}
-                          >
+                          <Button disabled={!territory.villages?.length} onClick={() => navigate(territory.id)}>
                             Villages
                           </Button>
                           <UpdateTerritoire territory={territory} />
@@ -158,9 +158,8 @@ export default function Territoire() {
                       </tr>
                     ))}
                   </React.Fragment>
-                ))
-              }
-              {status === 'succeeded' && territories.length === 0 && (
+                ))}
+              {status === "succeeded" && territories.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-center">
                     Aucun territoire trouvé
@@ -181,24 +180,16 @@ export default function Territoire() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group mb-3">
               <label htmlFor="name">Nom</label>
-              <input
-                id="name"
-                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                {...register('name')}
-              />
+              <input id="name" className={`form-control ${errors.name ? "is-invalid" : ""}`} {...register("name")} />
               {errors.name && <small className="text-danger">{errors.name.message}</small>}
             </div>
 
             <div className="form-group mb-3">
               <label htmlFor="province">Province</label>
-              <Form.Select
-                id="province"
-                {...register('province', { required: 'La province est obligatoire' })}
-                defaultValue=""
-              >
+              <Form.Select id="province" {...register("province")} defaultValue="">
                 <option value="">-- Sélectionnez une province --</option>
                 {provinces.map((province) => (
-                  <option key={province.id} value={province.id}>
+                  <option key={province.id} value={province.id || ""}>
                     {province.name}
                   </option>
                 ))}
@@ -207,11 +198,11 @@ export default function Territoire() {
             </div>
 
             <Button variant="primary" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              {isSubmitting ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </form>
         </Modal.Body>
       </Modal>
     </>
-  );
+  )
 }

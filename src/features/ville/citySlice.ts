@@ -2,17 +2,17 @@ import { type PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/tool
 import { deleteRequest, getRequest, parseError, postRequest, putRequest } from "utils/verbes"
 import { endpoints } from "utils/endpoints"
 
-import type { CreateCity, DeleteCityType, UpdateCityType } from "./villeType"
+import type { CreateCity, UpdateCityType } from "./villeType"
 import { z } from "zod"
 import { citySchema } from "./cityValidation"
 
 type statusType = "idle" | "loading" | "succeeded" | "failed"
 
 interface ICity {
-  id: string | null;
-  province: string | null;
-  name: string | null;
-  territory?: string; // Ajoutez cette ligne si le champ existe
+  id: string | null
+  province: string | null
+  name: string | null
+  territory?: string // Ajoutez cette ligne si le champ existe
 }
 
 type InitialState = {
@@ -45,13 +45,12 @@ const initialState: InitialState = {
   updateError: null,
 }
 
-export const fetchCitiesByTerritory = createAsyncThunk<ICity[], {id :string}>(
+export const fetchCitiesByTerritory = createAsyncThunk<ICity[], { id: string }>(
   "city/fetchCity",
-  async ({id}, { rejectWithValue }) => {
+  async ({ id }, { rejectWithValue }) => {
     try {
-      
       const response = await getRequest<unknown>(endpoints.cities.getByProvince(id))
-      console.log('2  viles ', response);
+      console.log("2  viles ", response)
 
       const dataValidation = z.array(citySchema).safeParse(response.data)
       if (!dataValidation.success) {
@@ -67,10 +66,10 @@ export const fetchCitiesByTerritory = createAsyncThunk<ICity[], {id :string}>(
 
 export const addCity = createAsyncThunk<ICity, CreateCity>("ville/addCity", async (newCity, { rejectWithValue }) => {
   try {
-    const response = await postRequest<ICity>('cities', newCity)
+    const response = await postRequest<ICity>("cities", newCity)
     // response.data.sectors = []
-    console.log('response :', response);
-    
+    console.log("response :", response)
+
     // const dataValidation = citySchema.safeParse(response.data)
     // if (!dataValidation.success) {
     //   console.error("check cities validation", dataValidation.error)
@@ -86,6 +85,9 @@ export const updateCity = createAsyncThunk<ICity, UpdateCityType>(
   "city/updateCity",
   async (params, { rejectWithValue }) => {
     try {
+      if (!params.id) {
+        return rejectWithValue("ID is required")
+      }
       const response = await putRequest<ICity>(endpoints.cities.update(params.id), {
         name: params.name,
         territory: params.territory,
@@ -106,23 +108,20 @@ export const deleteCity = createAsyncThunk<
   string,
   { id: string | null; reason: "Bad data" | "Data created by mistake and more" },
   { rejectValue: string }
->(
-  "city/deleteCity",
-  async (params, { rejectWithValue }) => {
-    const { id, reason } = params;
-    
-    if (!id) {
-      return rejectWithValue("Invalid city ID");
-    }
+>("city/deleteCity", async (params, { rejectWithValue }) => {
+  const { id, reason } = params
 
-    try {
-      await deleteRequest(`cities/${id}`, { reason });
-      return id;
-    } catch (error) {
-      return rejectWithValue(parseError(error));
-    }
+  if (!id) {
+    return rejectWithValue("Invalid city ID")
   }
-);
+
+  try {
+    await deleteRequest(`cities/${id}`, { reason })
+    return id
+  } catch (error) {
+    return rejectWithValue(parseError(error))
+  }
+})
 
 const citySlice = createSlice({
   name: "city",

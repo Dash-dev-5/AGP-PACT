@@ -68,20 +68,20 @@ export const updateVillage = createAsyncThunk<IVillage, { id: string; village: A
   },
 )
 
-export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }, {rejectValue : string}>(
+export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }, { rejectValue: string }>(
   "territory/fetchTerritory",
   async ({ id }, { rejectWithValue }) => {
     try {
-      console.log(' id ',id);
+      console.log(" id ", id)
       const response = await getRequest<unknown>(`territories/province/${id}`)
-      console.log('fact :',response);
-      
+      console.log("fact :", response)
+
       const dataValidation = z.array(territorySchema).safeParse(response.data)
       if (!dataValidation.success) {
         console.error("check territories validation", dataValidation.error)
         throw new Error("Les données ne sont pas correctement télécharger")
       }
-      return response.data
+      return response.data as ITerritory[]
     } catch (error) {
       return rejectWithValue(parseError(error))
     }
@@ -91,21 +91,21 @@ export const fetchTerritories = createAsyncThunk<ITerritory[], { id: string }, {
 export const addTerritory = createAsyncThunk<ITerritory, CreateTerritory>(
   "territories/addTerritory",
   async (newTerritory, { rejectWithValue }) => {
-    console.log('test ',newTerritory);
+    console.log("test ", newTerritory)
     try {
       const response = await postRequest<ITerritory>("territories", JSON.stringify(newTerritory))
-      console.log("Réponse backend:", response);
+      console.log("Réponse backend:", response)
 
       // response.data.cities = []
       const dataValidation = territorySchema.safeParse(response.data)
-      
+
       // if (!dataValidation.success) {
       //   console.error("check territories validation", dataValidation.error)
       //   throw new Error("Les données ne sont pas correctement télécharger")
       // }
       return response.data
     } catch (error) {
-      console.log("Erreur attrapée :", parseError(error));
+      console.log("Erreur attrapée :", parseError(error))
 
       return rejectWithValue(parseError(error))
     }
@@ -213,14 +213,16 @@ const territorySlice = createSlice({
       // Traverse territories, cities, and sectors to locate the village
       if (state.territories) {
         for (const territory of state.territories) {
-          for (const city of territory.cities) {
-            for (const sector of city.sectors) {
-              const villageIndex = sector.villages.findIndex((v) => v.id === updatedVillage.id)
+          if (territory.cities) {
+            for (const city of territory.cities) {
+              for (const sector of city.sectors || []) {
+                const villageIndex = sector.villages?.findIndex((v: IVillage) => v.id === updatedVillage.id) ?? -1
 
-              // If village is found, update it
-              if (villageIndex !== -1) {
-                sector.villages[villageIndex] = updatedVillage
-                return // Stop the loop once the village is updated
+                // If village is found, update it
+                if (villageIndex !== -1 && sector.villages) {
+                  sector.villages[villageIndex] = updatedVillage
+                  return // Stop the loop once the village is updated
+                }
               }
             }
           }
