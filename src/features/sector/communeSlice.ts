@@ -48,15 +48,28 @@ export const fetchSectors = createAsyncThunk<ISector[], { id: string }>(
   }
 )
 export const createSector = createAsyncThunk<
-  ISector, // Résultat attendu
-  CreateSector, // Payload d'entrée (typiquement : { name: string; city: string })
-  { rejectValue: string } // Valeur possible de rejet
+  ISector,
+  CreateSector,
+  { rejectValue: string }
 >(
   "sector/createSector",
   async (newSector, { rejectWithValue }) => {
     try {
-      const response = await postRequest<ISector>("sectors", newSector); // <--- ici le typage est crucial
-      return response.data;
+      const response = await postRequest("sectors", newSector);
+      
+      // Normalisation des données avant validation
+      const dataToValidate = {
+        ...response.data,
+        villages: response.data.villages || [] // Transforme null en []
+      };
+      
+      const validationResult = sectorSchema.safeParse(dataToValidate);
+      if (!validationResult.success) {
+        console.error("Validation error:", validationResult.error);
+        return rejectWithValue("Invalid data received from server");
+      }
+      
+      return validationResult.data;
     } catch (error) {
       return rejectWithValue(parseError(error));
     }
