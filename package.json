@@ -197,7 +197,7 @@
     "prettier": "^3.2.5",
     "prettier-eslint-cli": "^8.0.1",
     "react-error-overlay": "6.0.11",
-    "sass": "^1.79.4",
+    "sass": "^1.88.0",
     "typescript": "5.1.6"
   },
   "packageManager": "yarn@4.1.0"
