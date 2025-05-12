@@ -28,6 +28,7 @@ const UpdateVille = ({ ville }: { ville: ICity }) => {
       id: ville.id,
       name: ville.name,
       province: ville.province, // Ajouter la province actuelle
+      territory: ville.territory, // Add territory if it exists
     },
   })
 
@@ -36,6 +37,7 @@ const UpdateVille = ({ ville }: { ville: ICity }) => {
       id: ville.id,
       name: ville.name,
       province: ville.province, // Réinitialiser la province
+      territory: ville.territory, // Reset territory too
     })
     setShow(false)
   }
@@ -47,8 +49,8 @@ const UpdateVille = ({ ville }: { ville: ICity }) => {
         updateCity({
           id: data.id || "",
           name: data.name || "",
-          territory: data.territory || "",
           province: data.province || "",
+          territory: data.territory,
         }),
       ).unwrap()
       handleClose()

@@ -12,7 +12,14 @@ import { FaRegEdit } from "react-icons/fa"
 import { toast } from "react-toastify"
 import { fetchCitiesByTerritory } from "features/ville/citySlice"
 
-const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
+// Create a modified type that accepts string | null for the fields
+type ModifiedUpdateSectorType = {
+  id: string | null
+  name: string | null
+  city: string | null
+}
+
+const UpdateCommune = ({ sector }: { sector: ModifiedUpdateSectorType }) => {
   const [show, setShow] = useState(false)
   const dispatch = useAppDispatch()
   const { updateStatus } = useAppSelector((state) => state.sectors)
@@ -23,7 +30,7 @@ const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<UpdateSectorType>({
+  } = useForm<ModifiedUpdateSectorType>({
     resolver: zodResolver(updateSectorSchema),
     defaultValues: {
       id: sector.id || "",
@@ -42,12 +49,12 @@ const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
 
   useEffect(() => {
     if (sector.city) {
-      dispatch(fetchCitiesByTerritory({ id: sector.id }))
+      dispatch(fetchCitiesByTerritory({ id: sector.id || "" }))
     }
   }, [dispatch, sector.city, sector.id])
 
   const handleShow = () => {
-    reset({ id: sector.id, name: sector.name, city: sector.city })
+    reset({ id: sector.id || "", name: sector.name || "", city: sector.city || "" })
     setShow(true)
   }
 
@@ -55,9 +62,16 @@ const UpdateCommune = ({ sector }: { sector: UpdateSectorType }) => {
     setShow(false)
   }
 
-  const onSubmit = async (data: UpdateSectorType) => {
+  const onSubmit = async (data: ModifiedUpdateSectorType) => {
     try {
-      await dispatch(updateSector(data)).unwrap()
+      // Convert to the required type for the API call
+      const apiData: UpdateSectorType = {
+        id: data.id || "",
+        name: data.name || "",
+        city: data.city || "",
+      }
+
+      await dispatch(updateSector(apiData)).unwrap()
       toast.success("Commune mise à jour avec succès")
       handleClose()
     } catch (err) {

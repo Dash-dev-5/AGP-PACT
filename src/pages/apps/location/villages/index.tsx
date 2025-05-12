@@ -199,7 +199,7 @@ export default function Village() {
             >
               <option value="">-- Sélectionnez une ville --</option>
               {cities.map((v) => (
-                <option key={v.id} value={v.id}>
+                <option key={v.id} value={v.id || ""}>
                   {v.name}
                 </option>
               ))}
@@ -262,7 +262,7 @@ export default function Village() {
                       <UpdateVillage
                         village={{ id: village.id || "", name: village.name || "", sector: idTarget || "" }}
                       />
-                      <DeleteVillage id={village.id} name={village.name} />
+                      <DeleteVillage id={village.id} name={village.name || ""} />
                     </div>
                   </td>
                 </tr>
@@ -290,7 +290,7 @@ export default function Village() {
                         sector: idTarget || "",
                       }}
                     />
-                    <DeleteVillage id={village.id} name={village.name} />
+                    <DeleteVillage id={village.id || ""} name={village.name || ""} />
                   </div>
                 </td>
               </tr>
@@ -426,7 +426,7 @@ export default function Village() {
                   >
                     <option value="">-- Sélectionnez une ville --</option>
                     {cities.map((v) => (
-                      <option key={v.id} value={v.id}>
+                      <option key={v.id} value={v.id || ""}>
                         {v.name}
                       </option>
                     ))}

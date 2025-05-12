@@ -139,7 +139,7 @@ export default function Territoire() {
                             Villages
                           </Button>
                           <UpdateTerritoire territory={territory} />
-                          <DeleteTerritoire id={territory.id} name={territory.name} />
+                          <DeleteTerritoire id={territory.id} name={territory.name || ""} />
                         </div>
                       </td>
                     </tr>

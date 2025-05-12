@@ -114,7 +114,7 @@ export default function Commune() {
           <Form.Select value={idCity} onChange={(e) => setIdCity(e.target.value)} disabled={!provinceId}>
             <option value="">-- Sélectionnez une ville --</option>
             {cities.map((city) => (
-              <option key={city.id} value={city.id}>
+              <option key={city.id} value={city.id || ""}>
                 {city.name}
               </option>
             ))}

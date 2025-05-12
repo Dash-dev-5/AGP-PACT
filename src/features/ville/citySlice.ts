@@ -8,11 +8,12 @@ import { citySchema } from "./cityValidation"
 
 type statusType = "idle" | "loading" | "succeeded" | "failed"
 
+// Update the interface to include territory property
 interface ICity {
   id: string | null
   province: string | null
   name: string | null
-  territory?: string // Ajoutez cette ligne si le champ existe
+  territory?: string
 }
 
 type InitialState = {
@@ -90,7 +91,9 @@ export const updateCity = createAsyncThunk<ICity, UpdateCityType>(
       }
       const response = await putRequest<ICity>(endpoints.cities.update(params.id), {
         name: params.name,
-        territory: params.territory,
+        province: params.province,
+        // Only include territory if it exists in params
+        ...(params.territory && { territory: params.territory }),
       })
       const dataValidation = citySchema.safeParse(response.data)
       if (!dataValidation.success) {
