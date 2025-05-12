@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { TextField, Select, FormControl, InputLabel } from "@mui/material"
+import { TextField, Select, FormControl, InputLabel, MenuItem, type SelectChangeEvent } from "@mui/material"
 
 // Define a more specific type for formData
 interface FormData {
@@ -18,6 +18,9 @@ interface FormData {
 interface Form4AddressProps {
   formData: FormData
   setFormData: (data: FormData) => void
+  // Add these properties to match the components that use Form4Address
+  prevStep?: () => any
+  saveStepData?: (data: Partial<FormData>) => any
 }
 
 // Define types for city, sector, and village
@@ -102,20 +105,28 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
     fetchVillages()
   }, [selectedSector])
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // Handle text field changes
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value })
   }
 
-  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(event.target.value)
-    setFormData({ ...formData, cityId: event.target.value })
+  // Handle select changes
+  const handleCityChange = (event: SelectChangeEvent<string>) => {
+    const cityId = event.target.value
+    setSelectedCity(cityId)
+    setFormData({ ...formData, cityId })
     setSelectedSector("")
     setVillages([])
   }
 
-  const handleSectorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSector(event.target.value)
-    setFormData({ ...formData, sectorId: event.target.value })
+  const handleSectorChange = (event: SelectChangeEvent<string>) => {
+    const sectorId = event.target.value
+    setSelectedSector(sectorId)
+    setFormData({ ...formData, sectorId })
+  }
+
+  const handleVillageChange = (event: SelectChangeEvent<string>) => {
+    setFormData({ ...formData, villageId: event.target.value })
   }
 
   return (
@@ -124,7 +135,7 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
         label="Address"
         name="address"
         value={formData.address || ""}
-        onChange={handleChange}
+        onChange={handleTextChange}
         fullWidth
         margin="normal"
       />
@@ -138,13 +149,12 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
           value={formData.cityId || ""}
           label="City"
           onChange={handleCityChange}
-          native
         >
-          <option value="">Select a city</option>
+          <MenuItem value="">Select a city</MenuItem>
           {cities.map((city) => (
-            <option key={city.id} value={city.id}>
+            <MenuItem key={city.id} value={city.id}>
               {city.name}
-            </option>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -159,13 +169,12 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
           label="Sector"
           onChange={handleSectorChange}
           disabled={!selectedCity}
-          native
         >
-          <option value="">Select a sector</option>
+          <MenuItem value="">Select a sector</MenuItem>
           {sectors.map((sector) => (
-            <option key={sector.id} value={sector.id}>
+            <MenuItem key={sector.id} value={sector.id}>
               {sector.name}
-            </option>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -178,15 +187,14 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
           name="villageId"
           value={formData.villageId || ""}
           label="Village"
-          onChange={handleChange}
+          onChange={handleVillageChange}
           disabled={!selectedSector}
-          native
         >
-          <option value="">Select a village</option>
+          <MenuItem value="">Select a village</MenuItem>
           {villages.map((village) => (
-            <option key={village.id} value={village.id}>
+            <MenuItem key={village.id} value={village.id}>
               {village.name}
-            </option>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -195,7 +203,7 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
         label="Commune"
         name="commune"
         value={formData.commune || ""}
-        onChange={handleChange}
+        onChange={handleTextChange}
         fullWidth
         margin="normal"
       />
@@ -204,7 +212,7 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
         label="Quartier"
         name="quartier"
         value={formData.quartier || ""}
-        onChange={handleChange}
+        onChange={handleTextChange}
         fullWidth
         margin="normal"
       />

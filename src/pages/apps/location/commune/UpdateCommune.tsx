@@ -64,7 +64,7 @@ const UpdateCommune = ({ sector }: { sector: ModifiedUpdateSectorType }) => {
 
   const onSubmit = async (data: ModifiedUpdateSectorType) => {
     try {
-      // Convert to the required type for the API call
+      // Ensure all values are non-null before sending to the API
       const apiData: UpdateSectorType = {
         id: data.id || "",
         name: data.name || "",
