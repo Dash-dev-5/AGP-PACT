@@ -4,8 +4,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { TextField, Select, FormControl, InputLabel, MenuItem, type SelectChangeEvent } from "@mui/material"
 
-// Define a more specific type for formData
-interface FormData {
+// Define a more specific type for formData that can be extended
+export interface FormData {
   address?: string
   cityId?: string
   sectorId?: string
@@ -15,12 +15,13 @@ interface FormData {
   [key: string]: any // Allow other properties
 }
 
-interface Form4AddressProps {
-  formData: FormData
-  setFormData: (data: FormData) => void
+// Make the component generic to accept different form data types
+export interface Form4AddressProps<T extends FormData = FormData> {
+  formData: T
+  setFormData?: (data: T) => void
   // Add these properties to match the components that use Form4Address
   prevStep?: () => any
-  saveStepData?: (data: Partial<FormData>) => any
+  saveStepData?: (data: Partial<T>) => any
 }
 
 // Define types for city, sector, and village
@@ -45,7 +46,7 @@ interface Village {
   [key: string]: any
 }
 
-const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) => {
+function Form4Address<T extends FormData>({ formData, setFormData, prevStep, saveStepData }: Form4AddressProps<T>) {
   const [cities, setCities] = useState<City[]>([])
   const [sectors, setSectors] = useState<Sector[]>([])
   const [villages, setVillages] = useState<Village[]>([])
@@ -105,16 +106,25 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
     fetchVillages()
   }, [selectedSector])
 
+  // Update form data using the appropriate method
+  const updateFormData = (updates: Partial<T>) => {
+    if (saveStepData) {
+      saveStepData({ ...formData, ...updates })
+    } else if (setFormData) {
+      setFormData({ ...formData, ...updates })
+    }
+  }
+
   // Handle text field changes
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value })
+    updateFormData({ [event.target.name]: event.target.value } as Partial<T>)
   }
 
   // Handle select changes
   const handleCityChange = (event: SelectChangeEvent<string>) => {
     const cityId = event.target.value
     setSelectedCity(cityId)
-    setFormData({ ...formData, cityId })
+    updateFormData({ cityId } as Partial<T>)
     setSelectedSector("")
     setVillages([])
   }
@@ -122,11 +132,11 @@ const Form4Address: React.FC<Form4AddressProps> = ({ formData, setFormData }) =>
   const handleSectorChange = (event: SelectChangeEvent<string>) => {
     const sectorId = event.target.value
     setSelectedSector(sectorId)
-    setFormData({ ...formData, sectorId })
+    updateFormData({ sectorId } as Partial<T>)
   }
 
   const handleVillageChange = (event: SelectChangeEvent<string>) => {
-    setFormData({ ...formData, villageId: event.target.value })
+    updateFormData({ villageId: event.target.value } as Partial<T>)
   }
 
   return (
